@@ -4,8 +4,8 @@ import { TaintReportEntity } from '../taint-report/entities/taint-report.entity'
 import { Repository } from 'typeorm';
 import { WebsiteEntity } from '../taint-report/entities/website.entity';
 import { CookieEntity } from '../taint-report/entities/cookie.entity';
-import { MostUsedSinksEntity } from "./entities/most-used-sinks.entity";
-import { MostCommonScriptOriginsEntity } from "./entities/most-common-script-origins.entity";
+import { MostUsedSinksEntity } from './entities/most-used-sinks.entity';
+import { MostCommonScriptOriginsEntity } from './entities/most-common-script-origins.entity';
 
 @Injectable()
 export class StatisticsService {

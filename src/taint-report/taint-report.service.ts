@@ -21,7 +21,7 @@ export class TaintReportService {
 
   async create(createWebsiteDto: CreateWebsiteDto) {
     try {
-      const website = await this.findOne({ url: createWebsiteDto.url });
+      const website = await this.findOneByUrl({ url: createWebsiteDto.url });
       const newTaintReports = await this.taintReportRepository.save(
         createWebsiteDto.taintReports,
       );
@@ -40,15 +40,7 @@ export class TaintReportService {
     }
   }
 
-  findAll() {
-    return `This action returns all taintReport`;
-  }
-
-  async findOne(query) {
-    return await this.websiteRepository.findOneOrFail(query);
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} taintReport`;
+  async findOneByUrl(url) {
+    return await this.websiteRepository.findOneByOrFail({ url });
   }
 }
