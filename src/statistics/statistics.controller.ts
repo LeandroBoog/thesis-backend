@@ -1,13 +1,17 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, ParseArrayPipe, Query } from '@nestjs/common';
 import { StatisticsService } from './statistics.service';
 
 @Controller('statistics')
 export class StatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
 
-  // statistics?types=
-  @Get()
-  findAll(@Query('types') types: string[]) {
+  @Get('')
+  findAll(@Query('types', ParseArrayPipe) types: string[]) {
     return this.statisticsService.gatherStatistics(types);
+  }
+
+  @Get('test')
+  find() {
+    return this.statisticsService.mostUsedSinks();
   }
 }

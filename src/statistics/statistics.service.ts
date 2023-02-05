@@ -4,6 +4,8 @@ import { TaintReportEntity } from '../taint-report/entities/taint-report.entity'
 import { Repository } from 'typeorm';
 import { WebsiteEntity } from '../taint-report/entities/website.entity';
 import { CookieEntity } from '../taint-report/entities/cookie.entity';
+import { MostUsedSinksEntity } from "./entities/most-used-sinks.entity";
+import { MostCommonScriptOriginsEntity } from "./entities/most-common-script-origins.entity";
 
 @Injectable()
 export class StatisticsService {
@@ -24,46 +26,54 @@ export class StatisticsService {
     ];
 
     const statisticsToGather =
-      requestedStatistics.length === 0
+      requestedStatistics[0] === 'all'
         ? availableStatistics
         : availableStatistics.filter((stat) =>
             requestedStatistics.includes(stat),
           );
 
-    return await Promise.all(
-      statisticsToGather.map((type) => ({ type, data: this[type]() })),
-    );
+    return await Promise.all(statisticsToGather.map((type) => this[type]()));
   }
 
   // sinks listed from most used to least
   async mostUsedSinks() {
-    const [count, sinks] = await this.taintReportRepository
+    const query = await this.taintReportRepository
       .createQueryBuilder('report')
-      .addSelect('COUNT(report.sink) AS sink_total, report.sink')
+      .addSelect('COUNT(report.sink) AS total, report.sink AS sink')
       .groupBy('report.sink')
-      .orderBy('sink_total', 'DESC')
+      .orderBy('total', 'DESC')
       .getRawMany();
-    return [count, sinks];
+    return {
+      type: 'mostUsedSinks',
+      data: query.map((entry) => new MostUsedSinksEntity(entry)),
+    };
   }
 
   // most common ghostwriting origins
   async mostCommonScriptOrigins() {
-    const [count, scripts] = await this.taintReportRepository
+    const query = await this.taintReportRepository
       .createQueryBuilder('report')
-      .addSelect('COUNT(report.script) AS script_total, report.script')
+      .addSelect('COUNT(report.script) AS total, report.script AS script')
       .groupBy('report.script')
-      .orderBy('script_total', 'DESC')
+      .orderBy('total', 'DESC')
       .getRawMany();
-    return [count, scripts];
+    return {
+      type: 'mostCommonScriptOrigins',
+      data: query.map((entry) => new MostCommonScriptOriginsEntity(entry)),
+    };
   }
 
   async totalGhostwriting() {
     // count amount of taintreports
     // https://stackoverflow.com/questions/66307587/typeorm-how-to-add-count-field-when-using-getmany
-    return await this.websiteRepository
+    const a = await this.websiteRepository
       .createQueryBuilder('website')
       .loadRelationCountAndMap('website.reportCount', 'website.taintReports')
       .getMany();
+    return {
+      type: 'totalGhostwriting',
+      data: a,
+    };
   }
 }
 

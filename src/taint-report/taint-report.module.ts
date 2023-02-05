@@ -18,7 +18,6 @@ import { WebsiteEntity } from './entities/website.entity';
       WebsiteEntity,
     ]),
   ],
-  exports: [TaintReportModule],
   controllers: [TaintReportController],
   providers: [TaintReportService],
 })
