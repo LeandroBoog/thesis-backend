@@ -7,6 +7,7 @@ import config from 'src/common/configs/config';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaintReportModule } from './taint-report/taint-report.module';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TaintReportModule } from './taint-report/taint-report.module';
       autoLoadEntities: true,
     }),
     TaintReportModule,
+    StatisticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
