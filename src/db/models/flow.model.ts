@@ -27,13 +27,13 @@ export class FlowModel {
   @Column()
   filename: string;
 
-  @Column({ default: '' })
+  @Column()
   function: string;
 
   @Column()
   scriptLine: number;
 
-  @Column({ default: false })
+  @Column()
   scriptHash: string;
 
   @OneToMany(() => ArgumentModel, (argument) => argument.value, {
