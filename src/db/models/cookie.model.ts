@@ -6,10 +6,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { WebsiteEntity } from './website.entity';
+import { WebsiteModel } from './website.model';
 
 @Entity()
-export class CookieEntity {
+export class CookieModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -37,8 +37,8 @@ export class CookieEntity {
   @Column()
   sameSite: string;
 
-  @ManyToOne(() => WebsiteEntity, (website) => website.cookies)
-  website: WebsiteEntity;
+  @ManyToOne(() => WebsiteModel, (website) => website.cookies)
+  website: WebsiteModel;
 
   @CreateDateColumn()
   createdAt: string;

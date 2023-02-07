@@ -2,20 +2,20 @@ import { Module } from '@nestjs/common';
 import { StatisticsService } from './statistics.service';
 import { StatisticsController } from './statistics.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CookieEntity } from '../taint-report/entities/cookie.entity';
-import { FlowEntity } from '../taint-report/entities/flow.entity';
-import { TaintEntity } from '../taint-report/entities/taint.entity';
-import { TaintReportEntity } from '../taint-report/entities/taint-report.entity';
-import { WebsiteEntity } from '../taint-report/entities/website.entity';
+import { CookieModel } from '../db/models/cookie.model';
+import { FlowModel } from '../db/models/flow.model';
+import { TaintModel } from '../db/models/taint.model';
+import { TaintReportModel } from '../db/models/taint-report.model';
+import { WebsiteModel } from '../db/models/website.model';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      CookieEntity,
-      FlowEntity,
-      TaintEntity,
-      TaintReportEntity,
-      WebsiteEntity,
+      CookieModel,
+      FlowModel,
+      TaintModel,
+      TaintReportModel,
+      WebsiteModel,
     ]),
   ],
   controllers: [StatisticsController],

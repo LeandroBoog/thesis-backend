@@ -1,4 +1,5 @@
 {
+  "crawlSessionId": 2,
   "url": "wetransfer.com",
   "taintReports": [{
     "subframe":false,

@@ -14,7 +14,7 @@ import { StatisticsModule } from './statistics/statistics.module';
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     TypeOrmModule.forRoot({
       type: 'better-sqlite3',
-      database: 'bachelor-thesis',
+      database: 'src/db/database',
       synchronize: true,
       autoLoadEntities: true,
     }),

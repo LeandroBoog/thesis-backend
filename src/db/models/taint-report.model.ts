@@ -7,11 +7,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { TaintEntity } from './taint.entity';
-import { WebsiteEntity } from './website.entity';
+import { TaintModel } from './taint.model';
+import { WebsiteModel } from './website.model';
 
 @Entity()
-export class TaintReportEntity {
+export class TaintReportModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,13 +24,13 @@ export class TaintReportEntity {
   @Column()
   sink: string;
 
-  @OneToMany(() => TaintEntity, (taint) => taint.taintReport, {
+  @OneToMany(() => TaintModel, (taint) => taint.taintReport, {
     cascade: true,
   })
-  taints: TaintEntity[];
+  taints: TaintModel[];
 
-  @ManyToOne(() => WebsiteEntity, (website) => website.taintReports)
-  website: WebsiteEntity;
+  @ManyToOne(() => WebsiteModel, (website) => website.taintReports)
+  website: WebsiteModel;
 
   @CreateDateColumn()
   createdAt: string;

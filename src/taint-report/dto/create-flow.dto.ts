@@ -1,4 +1,13 @@
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsBoolean,
+  IsDefined,
+  IsNumber,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { CreateArgumentDto } from './create-argument.dto';
 
 export class CreateFlowDto {
   @IsString()
@@ -22,6 +31,9 @@ export class CreateFlowDto {
   @IsString()
   scriptHash: string;
 
-  @IsString()
-  arguments: string;
+  @ArrayNotEmpty()
+  @IsDefined()
+  @Type(() => CreateArgumentDto)
+  @ValidateNested({ each: true, message: 'arguments dto failed' })
+  arguments: CreateArgumentDto[];
 }

@@ -1,6 +1,7 @@
 import {
   ArrayNotEmpty,
   IsDefined,
+  IsNumber,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -9,6 +10,9 @@ import { CreateTaintReportDto } from './create-taint-report.dto';
 import { Type } from 'class-transformer';
 
 export class CreateWebsiteDto {
+  @IsNumber()
+  crawlSessionId: number;
+
   @IsString()
   url: string;
 

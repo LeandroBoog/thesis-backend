@@ -5,11 +5,13 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
-import { TaintEntity } from './taint.entity';
+import { TaintModel } from './taint.model';
+import { ArgumentModel } from './argument.model';
 
 @Entity()
-export class FlowEntity {
+export class FlowModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -34,11 +36,13 @@ export class FlowEntity {
   @Column({ default: false })
   scriptHash: string;
 
-  @Column({ default: false })
-  arguments: string;
+  @OneToMany(() => ArgumentModel, (argument) => argument.value, {
+    cascade: true,
+  })
+  arguments: ArgumentModel[];
 
-  @ManyToOne(() => TaintEntity, (taint) => taint.flows)
-  taint: TaintEntity;
+  @ManyToOne(() => TaintModel, (taint) => taint.flows)
+  taint: TaintModel;
 
   @CreateDateColumn()
   createdAt: string;

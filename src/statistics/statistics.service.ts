@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TaintReportEntity } from '../taint-report/entities/taint-report.entity';
+import { TaintReportModel } from '../db/models/taint-report.model';
 import { Repository } from 'typeorm';
-import { WebsiteEntity } from '../taint-report/entities/website.entity';
-import { CookieEntity } from '../taint-report/entities/cookie.entity';
+import { WebsiteModel } from '../db/models/website.model';
+import { CookieModel } from '../db/models/cookie.model';
 import { MostUsedSinksEntity } from './entities/most-used-sinks.entity';
 import { MostCommonScriptOriginsEntity } from './entities/most-common-script-origins.entity';
 
 @Injectable()
 export class StatisticsService {
   constructor(
-    @InjectRepository(TaintReportEntity)
-    private taintReportRepository: Repository<TaintReportEntity>,
-    @InjectRepository(WebsiteEntity)
-    private websiteRepository: Repository<WebsiteEntity>,
-    @InjectRepository(CookieEntity)
-    private cookieRepository: Repository<CookieEntity>,
+    @InjectRepository(TaintReportModel)
+    private taintReportRepository: Repository<TaintReportModel>,
+    @InjectRepository(WebsiteModel)
+    private websiteRepository: Repository<WebsiteModel>,
+    @InjectRepository(CookieModel)
+    private cookieRepository: Repository<CookieModel>,
   ) {}
 
   async gatherStatistics(requestedStatistics) {
