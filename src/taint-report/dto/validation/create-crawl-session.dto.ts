@@ -1,30 +1,24 @@
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNumber } from 'class-validator';
 
 export class CreateCrawlSessionDto {
   @IsNumber()
-  maxDepth: number;
+  maxDepth?: number;
 
   @IsNumber()
-  maxLinks: number;
+  maxLinks?: number;
 
   @IsNumber()
-  maxRetries: number;
+  maxRetries?: number;
 
   @IsBoolean()
-  sameSite: boolean;
+  sameSite?: boolean;
 
   @IsBoolean()
-  depthFirst: boolean;
+  depthFirst?: boolean;
 
   @IsBoolean()
-  manualQueue: boolean;
+  manualQueue?: boolean;
 
   @IsBoolean()
-  randomizeLinks: boolean;
-
-  @IsString()
-  usedList: string;
-
-  @IsNumber()
-  pageLimit: number;
+  randomizeLinks?: boolean;
 }

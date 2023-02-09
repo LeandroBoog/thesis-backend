@@ -13,32 +13,26 @@ export class CrawlSessionModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ default: 0 })
   maxDepth: number;
 
-  @Column()
+  @Column({ default: 0 })
   maxLinks: number;
 
-  @Column()
+  @Column({ default: 0 })
   maxRetries: number;
 
-  @Column()
+  @Column({ default: true })
   sameSite: boolean;
 
-  @Column()
+  @Column({ default: false })
   depthFirst: boolean;
 
-  @Column()
+  @Column({ default: false })
   manualQueue: boolean;
 
-  @Column()
+  @Column({ default: false })
   randomizeLinks: boolean;
-
-  @Column()
-  usedList: string;
-
-  @Column()
-  pageLimit: number;
 
   @OneToMany(() => WebsiteModel, (website) => website.crawlSession, {
     cascade: true,
