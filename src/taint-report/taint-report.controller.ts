@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { TaintReportService } from './taint-report.service';
-import { CreateWebsiteDto } from './dto/create-website.dto';
-import { CreateCrawlSessionDto } from './dto/create-crawl-session.dto';
+import { CreateWebsiteDto } from './dto/validation/create-website.dto';
+import { CreateCrawlSessionDto } from './dto/validation/create-crawl-session.dto';
 
 @Controller('taint-report')
 export class TaintReportController {
