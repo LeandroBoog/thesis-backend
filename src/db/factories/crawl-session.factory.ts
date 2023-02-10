@@ -13,8 +13,6 @@ export const CrawlSessionFactory = setSeederFactory(
     entry.depthFirst = faker.datatype.boolean();
     entry.manualQueue = faker.datatype.boolean();
     entry.randomizeLinks = faker.datatype.boolean();
-    entry.usedList = faker.datatype.string(10);
-    entry.pageLimit = faker.datatype.number();
     return entry;
   },
 );

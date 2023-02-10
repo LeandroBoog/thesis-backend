@@ -9,6 +9,7 @@ import { CookieModel } from '../db/models/cookie.model';
 import { CreateWebsiteDto } from './dto/validation/create-website.dto';
 import { CreateCrawlSessionDto } from './dto/validation/create-crawl-session.dto';
 import { CrawlSessionModel } from '../db/models/crawl-session.model';
+import { SessionEntity } from "./entities/session.entity";
 
 @Injectable()
 export class TaintReportService {
@@ -27,23 +28,21 @@ export class TaintReportService {
     const orderedByCreationDate = await this.crawlSessionRepository.find({
       order: { createdAt: 'desc' },
     });
-    return orderedByCreationDate[0];
+    return new SessionEntity(orderedByCreationDate[0]);
   }
 
   async createCrawlSession(createCrawlSession: CreateCrawlSessionDto) {
     const newCrawlSession =
       this.crawlSessionRepository.create(createCrawlSession);
     newCrawlSession.websites = [];
-    return await this.crawlSessionRepository.save(newCrawlSession);
+    return new SessionEntity(
+      await this.crawlSessionRepository.save(newCrawlSession),
+    );
   }
 
   async createWebsiteEntry(createWebsiteDto: CreateWebsiteDto) {
     const doesSessionExist = await this.sessionExists(createWebsiteDto);
-    if (!doesSessionExist)
-      return {
-        status: 400,
-        error: `CrawlSession of id ${createWebsiteDto.crawlSessionId} does not exist!`,
-      };
+    if (!doesSessionExist) return undefined;
 
     const doesWebsiteAlreadyExist = await this.websiteExistsInSession(
       createWebsiteDto,
@@ -88,9 +87,7 @@ export class TaintReportService {
     await this.crawlSessionRepository.save(crawlSession);
 
     return {
-      status: 'created',
-      crawlSessionId,
-      websiteId: newWebsite.id,
+      id: newWebsite.id,
       url,
     };
   }
@@ -121,12 +118,8 @@ export class TaintReportService {
     await this.websiteRepository.save(website);
 
     return {
-      status: 'created',
-      crawlSessionId,
-      website: {
-        id: website.id,
-        url,
-      },
+      id: website.id,
+      url,
     };
   }
 }

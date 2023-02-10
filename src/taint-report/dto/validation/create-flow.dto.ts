@@ -31,7 +31,6 @@ export class CreateFlowDto {
   @IsString()
   scriptHash: string;
 
-  @ArrayNotEmpty()
   @IsDefined()
   @Type(() => CreateArgumentDto)
   @ValidateNested({ each: true, message: 'arguments dto failed' })

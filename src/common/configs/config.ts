@@ -5,9 +5,8 @@ const config: Config = {
     port: 3000,
   },
   cors: {
-    enabled: true,
+    enabled: false,
     origin: 'http://localhost:8080',
-    credentials: true,
   },
   swagger: {
     enabled: true,

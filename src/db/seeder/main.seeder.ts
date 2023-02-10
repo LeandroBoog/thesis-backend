@@ -15,10 +15,20 @@ export class MainSeeder implements Seeder {
     dataSource: DataSource,
     factoryManager: SeederFactoryManager,
   ) {
-    const sessions = await factoryManager.get(CrawlSessionModel).saveMany(5);
+    const amountOfSessions = 5;
+    const amountOfWebsites = amountOfSessions * 5;
+    const amountOfCookies = amountOfWebsites * 10;
+    const amountOfTaintReports = amountOfWebsites * 5;
+    const amountOfTaints = amountOfTaintReports * 2;
+    const amountOfFlows = amountOfTaints * 10;
+    const amountOfArguments = amountOfFlows * 3;
+
+    const sessions = await factoryManager
+      .get(CrawlSessionModel)
+      .saveMany(amountOfSessions);
 
     const websites = await this.createAndAddToRelation({
-      amount: 100,
+      amount: amountOfWebsites,
       foreignKey: 'crawlSession',
       associateTo: sessions,
       factory: await factoryManager.get(WebsiteModel),
@@ -26,7 +36,7 @@ export class MainSeeder implements Seeder {
     });
 
     const cookies = await this.createAndAddToRelation({
-      amount: 100,
+      amount: amountOfCookies,
       foreignKey: 'website',
       associateTo: websites,
       factory: await factoryManager.get(CookieModel),
@@ -34,7 +44,7 @@ export class MainSeeder implements Seeder {
     });
 
     const taintReports = await this.createAndAddToRelation({
-      amount: 50,
+      amount: amountOfTaintReports,
       foreignKey: 'website',
       associateTo: websites,
       factory: await factoryManager.get(TaintReportModel),
@@ -42,7 +52,7 @@ export class MainSeeder implements Seeder {
     });
 
     const taints = await this.createAndAddToRelation({
-      amount: 70,
+      amount: amountOfTaints,
       foreignKey: 'taintReport',
       associateTo: taintReports,
       factory: await factoryManager.get(TaintModel),
@@ -50,7 +60,7 @@ export class MainSeeder implements Seeder {
     });
 
     const flows = await this.createAndAddToRelation({
-      amount: 1000,
+      amount: amountOfFlows,
       foreignKey: 'taint',
       associateTo: taints,
       factory: await factoryManager.get(FlowModel),
@@ -58,7 +68,7 @@ export class MainSeeder implements Seeder {
     });
 
     await this.createAndAddToRelation({
-      amount: 10000,
+      amount: amountOfArguments,
       foreignKey: 'flow',
       associateTo: flows,
       factory: await factoryManager.get(ArgumentModel),
