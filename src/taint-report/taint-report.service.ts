@@ -9,7 +9,7 @@ import { CookieModel } from '../db/models/cookie.model';
 import { CreateWebsiteDto } from './dto/validation/create-website.dto';
 import { CreateCrawlSessionDto } from './dto/validation/create-crawl-session.dto';
 import { CrawlSessionModel } from '../db/models/crawl-session.model';
-import { SessionEntity } from "./entities/session.entity";
+import { SessionEntity } from './entities/session.entity';
 
 @Injectable()
 export class TaintReportService {

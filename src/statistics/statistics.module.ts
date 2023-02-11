@@ -7,10 +7,12 @@ import { FlowModel } from '../db/models/flow.model';
 import { TaintModel } from '../db/models/taint.model';
 import { TaintReportModel } from '../db/models/taint-report.model';
 import { WebsiteModel } from '../db/models/website.model';
+import { CrawlSessionModel } from '../db/models/crawl-session.model';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
+      CrawlSessionModel,
       CookieModel,
       FlowModel,
       TaintModel,
