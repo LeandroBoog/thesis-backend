@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { TaintReportService } from './taint-report.service';
-import { TaintReportController } from './taint-report.controller';
+import { CrawlerService } from './crawler.service';
+import { CrawlerController } from './crawler.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FlowModel } from '../db/models/flow.model';
 import { CookieModel } from '../db/models/cookie.model';
@@ -22,7 +22,7 @@ import { ArgumentModel } from '../db/models/argument.model';
       CrawlSessionModel,
     ]),
   ],
-  controllers: [TaintReportController],
-  providers: [TaintReportService],
+  controllers: [CrawlerController],
+  providers: [CrawlerService],
 })
-export class TaintReportModule {}
+export class CrawlerModule {}

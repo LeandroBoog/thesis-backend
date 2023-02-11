@@ -4,9 +4,10 @@ import { TaintReportModel } from '../db/models/taint-report.model';
 import { Repository } from 'typeorm';
 import { WebsiteModel } from '../db/models/website.model';
 import { CookieModel } from '../db/models/cookie.model';
-import { QueryDataTransformer } from '../common/QueryDataTransformer';
+import { QueryDataTransformer } from '../common/helpers/QueryDataTransformer';
 import { FlowModel } from '../db/models/flow.model';
 import { CrawlSessionModel } from '../db/models/crawl-session.model';
+import { SessionEntity } from './entities/session.entity';
 
 @Injectable()
 export class StatisticsService {
@@ -39,7 +40,15 @@ export class StatisticsService {
             requestedStatistics.includes(stat),
           );
 
-    return await Promise.all(statisticsToGather.map((type) => this[type]()));
+    return {
+      sessions: await this.findAllSessions(),
+      data: await Promise.all(statisticsToGather.map((type) => this[type]())),
+    };
+  }
+
+  async findAllSessions() {
+    const query = await this.crawlSessionRepository.find({});
+    return query.map((session) => new SessionEntity(session));
   }
 
   async mostUsedSinks() {
@@ -57,7 +66,10 @@ export class StatisticsService {
 
     return {
       type: 'mostUsedSinks',
-      data: QueryDataTransformer.transformMostUsedSinks(query),
+      data: QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
+        ['sink', 'total'],
+        query,
+      ),
     };
   }
 
@@ -78,7 +90,10 @@ export class StatisticsService {
 
     return {
       type: 'mostCommonScriptOrigins',
-      data: QueryDataTransformer.transformMostCommonUsedScripts(query),
+      data: QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
+        ['script', 'total'],
+        query,
+      ),
     };
   }
 
@@ -99,7 +114,10 @@ export class StatisticsService {
 
     return {
       type: 'websiteWithMostGhostwriting',
-      data: QueryDataTransformer.transformWebsiteWithMostGhostwriting(query),
+      data: QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
+        ['url', 'total'],
+        query,
+      ),
     };
   }
 
@@ -116,7 +134,7 @@ export class StatisticsService {
 
     return {
       type: 'totalGhostwritingReports',
-      data: QueryDataTransformer.transformTotalGhostwritingReports(query),
+      data: QueryDataTransformer.transformSingleCountData(query),
     };
   }
 
@@ -139,7 +157,7 @@ export class StatisticsService {
 
     return {
       type: 'totalFlowsWithRelevantSource',
-      data: QueryDataTransformer.transformTotalFlowsWithRelevantSource(query),
+      data: QueryDataTransformer.transformSingleCountData(query),
     };
   }
 

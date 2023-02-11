@@ -6,7 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import config from 'src/common/configs/config';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TaintReportModule } from './taint-report/taint-report.module';
+import { CrawlerModule } from './crawler/crawler.module';
 import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
@@ -18,12 +18,10 @@ import { StatisticsModule } from './statistics/statistics.module';
       synchronize: true,
       autoLoadEntities: true,
     }),
-    TaintReportModule,
+    CrawlerModule,
     StatisticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
-
-// entities: [__dirname + '/**/*.entity{.ts,.js}'],

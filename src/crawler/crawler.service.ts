@@ -12,7 +12,7 @@ import { CrawlSessionModel } from '../db/models/crawl-session.model';
 import { SessionEntity } from './entities/session.entity';
 
 @Injectable()
-export class TaintReportService {
+export class CrawlerService {
   constructor(
     @InjectRepository(CrawlSessionModel)
     private crawlSessionRepository: Repository<CrawlSessionModel>,
@@ -24,11 +24,17 @@ export class TaintReportService {
     private cookieRepository: Repository<CookieModel>,
   ) {}
 
-  async getLatestCrawlSession() {
-    const orderedByCreationDate = await this.crawlSessionRepository.find({
-      order: { createdAt: 'desc' },
+  async findOrCreateSession(createCrawlSession: CreateCrawlSessionDto) {
+    const session = await this.findSessionByConfiguration(createCrawlSession);
+    return session
+      ? session
+      : await this.createCrawlSession(createCrawlSession);
+  }
+
+  async findSessionByConfiguration(configuration: CreateCrawlSessionDto) {
+    return await this.crawlSessionRepository.findOne({
+      where: configuration,
     });
-    return new SessionEntity(orderedByCreationDate[0]);
   }
 
   async createCrawlSession(createCrawlSession: CreateCrawlSessionDto) {
@@ -41,7 +47,7 @@ export class TaintReportService {
   }
 
   async createWebsiteEntry(createWebsiteDto: CreateWebsiteDto) {
-    const doesSessionExist = await this.sessionExists(createWebsiteDto);
+    const doesSessionExist = await this.doesSessionExist(createWebsiteDto);
     if (!doesSessionExist) return undefined;
 
     const doesWebsiteAlreadyExist = await this.websiteExistsInSession(
@@ -54,7 +60,7 @@ export class TaintReportService {
     }
   }
 
-  async sessionExists({ crawlSessionId }) {
+  async doesSessionExist({ crawlSessionId }) {
     return !!(await this.crawlSessionRepository.findOne({
       where: { id: crawlSessionId },
     }));
