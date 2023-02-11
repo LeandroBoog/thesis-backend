@@ -16,6 +16,20 @@ export class QueryDataTransformer {
     return QueryDataTransformer.transformSessionData(data, keys);
   }
 
+  static transformTotalFlowsWithRelevantSource(data) {
+    return QueryDataTransformer.transformSingleCountData(data);
+  }
+  static transformTotalGhostwritingReports(data) {
+    return QueryDataTransformer.transformSingleCountData(data);
+  }
+
+  static transformSingleCountData(data) {
+    return data.map((result) => ({
+      session: new SessionEntity(result),
+      total: result.total,
+    }));
+  }
+
   static transformSessionData(queryResults, keysOfDataToAdd) {
     const sessions = {};
     queryResults

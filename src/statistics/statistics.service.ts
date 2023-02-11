@@ -5,10 +5,8 @@ import { Repository } from 'typeorm';
 import { WebsiteModel } from '../db/models/website.model';
 import { CookieModel } from '../db/models/cookie.model';
 import { QueryDataTransformer } from '../common/QueryDataTransformer';
-import { MostCommonScriptOriginsEntity } from './entities/most-common-script-origins.entity';
 import { FlowModel } from '../db/models/flow.model';
 import { CrawlSessionModel } from '../db/models/crawl-session.model';
-import { SessionEntity } from './entities/session.entity';
 
 @Injectable()
 export class StatisticsService {
@@ -118,10 +116,7 @@ export class StatisticsService {
 
     return {
       type: 'totalGhostwritingReports',
-      data: query.map((result) => ({
-        session: new SessionEntity(result),
-        total: result.total,
-      })),
+      data: QueryDataTransformer.transformTotalGhostwritingReports(query),
     };
   }
 
@@ -144,10 +139,7 @@ export class StatisticsService {
 
     return {
       type: 'totalFlowsWithRelevantSource',
-      data: query.map((result) => ({
-        session: new SessionEntity(result),
-        total: result.total,
-      })),
+      data: QueryDataTransformer.transformTotalFlowsWithRelevantSource(query),
     };
   }
 
