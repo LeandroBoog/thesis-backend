@@ -1,12 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TaintReportModel } from '../db/models/taint-report.model';
 import { Repository } from 'typeorm';
-import { WebsiteModel } from '../db/models/website.model';
-import { CookieModel } from '../db/models/cookie.model';
-import { QueryDataTransformer } from '../common/helpers/QueryDataTransformer';
-import { FlowModel } from '../db/models/flow.model';
 import { CrawlSessionModel } from '../db/models/crawl-session.model';
+import { QueryDataTransformer } from '../common/helpers/QueryDataTransformer';
 import { SessionEntity } from './entities/session.entity';
 
 @Injectable()
@@ -14,14 +10,6 @@ export class StatisticsService {
   constructor(
     @InjectRepository(CrawlSessionModel)
     private crawlSessionRepository: Repository<CrawlSessionModel>,
-    @InjectRepository(TaintReportModel)
-    private taintReportRepository: Repository<TaintReportModel>,
-    @InjectRepository(WebsiteModel)
-    private websiteRepository: Repository<WebsiteModel>,
-    @InjectRepository(CookieModel)
-    private cookieRepository: Repository<CookieModel>,
-    @InjectRepository(FlowModel)
-    private flowRepository: Repository<FlowModel>,
   ) {}
 
   async gatherStatistics(requestedStatistics) {
