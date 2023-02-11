@@ -11,9 +11,4 @@ export class StatisticsController {
   findAll(@Query('types', ParseArrayPipe) types: string[]) {
     return this.statisticsService.gatherStatistics(types);
   }
-
-  @Get('test')
-  find() {
-    return this.statisticsService.mostUsedSinks();
-  }
 }

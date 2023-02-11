@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CrawlerService } from './crawler.service';
 import { CreateWebsiteDto } from './dto/validation/create-website.dto';
 import { CreateCrawlSessionDto } from './dto/validation/create-crawl-session.dto';
-import { NotFoundInterceptor } from '../common/interceptor/not-found.interceptor';
+import { NotFoundInterceptor } from '../common/interceptors/not-found.interceptor';
 
 @Controller('crawler')
 @ApiTags('Crawler')

@@ -1,4 +1,3 @@
-
 export class QueryDataTransformer {
   static transformSingleCountData(data) {
     return data.map((result) => ({

@@ -27,8 +27,8 @@ export class CrawlerService {
   async findOrCreateSession(createCrawlSession: CreateCrawlSessionDto) {
     const session = await this.findSessionByConfiguration(createCrawlSession);
     return session
-      ? session
-      : await this.createCrawlSession(createCrawlSession);
+      ? new SessionEntity(session)
+      : new SessionEntity(await this.createCrawlSession(createCrawlSession));
   }
 
   async findSessionByConfiguration(configuration: CreateCrawlSessionDto) {
@@ -41,9 +41,7 @@ export class CrawlerService {
     const newCrawlSession =
       this.crawlSessionRepository.create(createCrawlSession);
     newCrawlSession.websites = [];
-    return new SessionEntity(
-      await this.crawlSessionRepository.save(newCrawlSession),
-    );
+    return await this.crawlSessionRepository.save(newCrawlSession);
   }
 
   async createWebsiteEntry(createWebsiteDto: CreateWebsiteDto) {
@@ -117,6 +115,7 @@ export class CrawlerService {
         url,
       },
     });
+
     const newTaintReports = this.taintReportRepository.create(taintReports);
     website.taintReports.push(...newTaintReports);
     const newCookies = this.cookieRepository.create(cookies);
