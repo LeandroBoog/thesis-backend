@@ -22,7 +22,7 @@ import { MainSeeder } from './main.seeder';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'better-sqlite3',
-  database: 'src/db/database',
+  database: 'database/database.sqlite',
   entities: [
     ArgumentModel,
     CookieModel,

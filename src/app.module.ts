@@ -12,7 +12,7 @@ import { StatisticsModule } from './statistics/statistics.module';
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     TypeOrmModule.forRoot({
       type: 'better-sqlite3',
-      database: 'src/db/database',
+      database: 'database/database.sqlite',
       synchronize: true,
       autoLoadEntities: true,
     }),
