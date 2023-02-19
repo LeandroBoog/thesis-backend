@@ -35,5 +35,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # database
-database/database
+database/database.sqlite
 sampleData

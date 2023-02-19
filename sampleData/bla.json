@@ -1,5 +1,5 @@
 {
-  "crawlSessionId": 3,
+  "crawlSessionId": 1,
   "url": "http://shady-friend.org",
   "taintReports": [{
     "subframe":false,

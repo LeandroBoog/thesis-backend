@@ -5,8 +5,8 @@ const config: Config = {
     port: 3000,
   },
   cors: {
-    enabled: false,
-    origin: 'http://localhost:8080',
+    enabled: true,
+    origin: /ias\.tu-bs\.de$/,
   },
   swagger: {
     enabled: true,
