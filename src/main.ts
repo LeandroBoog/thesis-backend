@@ -9,9 +9,13 @@ import type {
   SwaggerConfig,
 } from 'src/common/configs/config.interface';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { json } from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // taint reports can be quiet large, so we need to up the max request size
+  app.use(json({ limit: '50mb' }));
 
   app.useGlobalPipes(
     new ValidationPipe({
