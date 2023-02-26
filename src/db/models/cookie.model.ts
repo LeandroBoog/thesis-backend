@@ -20,6 +20,9 @@ export class CookieModel {
   value: string;
 
   @Column()
+  isIdentifierCookie: boolean;
+
+  @Column()
   domain: string;
 
   @Column()

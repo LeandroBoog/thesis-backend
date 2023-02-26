@@ -6,6 +6,7 @@ export const CookieFactory = setSeederFactory(CookieModel, (faker: Faker) => {
   const entry = new CookieModel();
   entry.name = faker.datatype.string(10);
   entry.value = faker.datatype.string(10);
+  entry.isIdentifierCookie = faker.datatype.boolean();
   entry.domain = faker.datatype.string(10);
   entry.expires = faker.datatype.number(10);
   entry.path = faker.datatype.string(10);

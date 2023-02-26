@@ -22,6 +22,9 @@ export class TaintReportModel {
   taintedString: string;
 
   @Column()
+  isIdentifierCookie: boolean;
+
+  @Column()
   sink: string;
 
   @OneToMany(() => TaintModel, (taint) => taint.taintReport, {

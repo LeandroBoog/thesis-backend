@@ -1,5 +1,6 @@
 import {
   ArrayNotEmpty,
+  IsBoolean,
   IsDefined,
   IsString,
   ValidateNested,
@@ -13,6 +14,9 @@ export class CreateTaintReportDto {
 
   @IsString()
   taintedString: string;
+
+  @IsBoolean()
+  isIdentifierCookie: boolean;
 
   @IsString()
   sink: string;

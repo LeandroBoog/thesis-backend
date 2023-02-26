@@ -15,6 +15,7 @@ export const TaintReportFactory = setSeederFactory(
       'https://loud-inverse.info',
     ]);
     entry.taintedString = faker.datatype.string(10);
+    entry.isIdentifierCookie = faker.datatype.boolean();
     entry.sink = faker.helpers.arrayElement([
       'document.cookie',
       'document.write',

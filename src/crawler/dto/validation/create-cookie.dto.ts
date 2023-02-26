@@ -7,6 +7,9 @@ export class CreateCookieDto {
   @IsString()
   value: string;
 
+  @IsBoolean()
+  isIdentifierCookie: boolean;
+
   @IsString()
   domain: string;
 

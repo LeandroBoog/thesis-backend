@@ -51,6 +51,7 @@ export class CrawlerService {
     const doesWebsiteAlreadyExist = await this.websiteExistsInSession(
       createWebsiteDto,
     );
+
     if (!doesWebsiteAlreadyExist) {
       return await this.addNewWebsiteToSession(createWebsiteDto);
     } else {
