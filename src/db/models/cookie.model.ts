@@ -40,6 +40,9 @@ export class CookieModel {
   @Column()
   sameSite: string;
 
+  @Column()
+  hash: string;
+
   @ManyToOne(() => WebsiteModel, (website) => website.cookies)
   website: WebsiteModel;
 

@@ -6,6 +6,7 @@ import config from 'src/common/configs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CrawlerModule } from './crawler/crawler.module';
 import { StatisticsModule } from './statistics/statistics.module';
+import { AppController } from "./app.controller";
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { StatisticsModule } from './statistics/statistics.module';
     CrawlerModule,
     StatisticsModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}

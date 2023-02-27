@@ -27,4 +27,7 @@ export class CreateCookieDto {
 
   @IsString()
   sameSite: string;
+
+  @IsString()
+  hash: string;
 }

@@ -128,4 +128,19 @@ export class CrawlerService {
       url,
     };
   }
+
+
+  async filterCookies(crawlSessionId, cookies) {
+    const alreadyStoredCookies = await this.cookieRepository
+      .createQueryBuilder('cookie')
+      .where('cookie.hash IN (:...hashes)', {
+        hashes: cookies.map((cookie) => cookie.hash),
+      })
+      .getMany();
+
+    return cookies.filter(
+      (newCookie) =>
+        !alreadyStoredCookies.some((cookie) => cookie.hash === newCookie.hash),
+    );
+  }
 }

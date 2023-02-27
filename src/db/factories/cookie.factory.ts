@@ -13,5 +13,6 @@ export const CookieFactory = setSeederFactory(CookieModel, (faker: Faker) => {
   entry.httpOnly = faker.datatype.boolean();
   entry.secure = faker.datatype.boolean();
   entry.sameSite = faker.datatype.string(10);
+  entry.hash = faker.datatype.string(10);
   return entry;
 });
