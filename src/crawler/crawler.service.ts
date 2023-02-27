@@ -129,6 +129,17 @@ export class CrawlerService {
     };
   }
 
+  async resetSession(crawlSessionId) {
+    const doesSessionExist = await this.doesSessionExist({ crawlSessionId });
+    if (!doesSessionExist) return undefined;
+
+    return await this.crawlSessionRepository
+      .createQueryBuilder('session')
+      .delete()
+      .where('id = :id', { id: crawlSessionId })
+      .execute();
+  }
+
   async filterCookies(crawlSessionId, cookies) {
     const alreadyStoredCookies = await this.cookieRepository
       .createQueryBuilder('cookie')

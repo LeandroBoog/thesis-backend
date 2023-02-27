@@ -19,7 +19,9 @@ export class WebsiteModel {
   @Column()
   url: string;
 
-  @ManyToOne(() => CrawlSessionModel, (crawlSession) => crawlSession.websites)
+  @ManyToOne(() => CrawlSessionModel, (crawlSession) => crawlSession.websites, {
+    onDelete: 'CASCADE',
+  })
   crawlSession: CrawlSessionModel;
 
   @OneToMany(() => TaintReportModel, (taintReport) => taintReport.website, {

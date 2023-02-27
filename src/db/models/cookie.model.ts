@@ -43,7 +43,9 @@ export class CookieModel {
   @Column()
   hash: string;
 
-  @ManyToOne(() => WebsiteModel, (website) => website.cookies)
+  @ManyToOne(() => WebsiteModel, (website) => website.cookies, {
+    onDelete: 'CASCADE',
+  })
   website: WebsiteModel;
 
   @CreateDateColumn()

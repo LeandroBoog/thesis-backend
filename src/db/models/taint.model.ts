@@ -26,7 +26,9 @@ export class TaintModel {
   })
   flows: FlowModel[];
 
-  @ManyToOne(() => TaintReportModel, (taintReport) => taintReport.taints)
+  @ManyToOne(() => TaintReportModel, (taintReport) => taintReport.taints, {
+    onDelete: 'CASCADE',
+  })
   taintReport: TaintReportModel;
 
   @CreateDateColumn()

@@ -32,7 +32,9 @@ export class TaintReportModel {
   })
   taints: TaintModel[];
 
-  @ManyToOne(() => WebsiteModel, (website) => website.taintReports)
+  @ManyToOne(() => WebsiteModel, (website) => website.taintReports, {
+    onDelete: 'CASCADE',
+  })
   website: WebsiteModel;
 
   @CreateDateColumn()

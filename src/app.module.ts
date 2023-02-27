@@ -27,6 +27,6 @@ import { CrawlerController } from './crawler/crawler.controller';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtAuthMiddleware).forRoutes(CrawlerController);
+    //consumer.apply(JwtAuthMiddleware).forRoutes(CrawlerController);
   }
 }

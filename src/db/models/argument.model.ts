@@ -16,7 +16,9 @@ export class ArgumentModel {
   @Column()
   value: string;
 
-  @ManyToOne(() => FlowModel, (flow) => flow.arguments)
+  @ManyToOne(() => FlowModel, (flow) => flow.arguments, {
+    onDelete: 'CASCADE',
+  })
   flow: FlowModel;
 
   @CreateDateColumn()
