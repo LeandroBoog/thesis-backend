@@ -72,21 +72,3 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](LICENSE).
 
-
-
-    for(const taintReport of createWebsiteDto.taintReports) {
-
-      for(const taint of taintReport.taints) {
-
-          for(const flow of taint.flows) {
-
-
-          }
-      }
-    }
-    
-    const taintReports = await this.taintReportRepository.save(
-      createWebsiteDto.taintReports,
-    );
-
-

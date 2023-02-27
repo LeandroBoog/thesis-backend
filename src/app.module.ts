@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { ConfigModule } from '@nestjs/config';
 import config from 'src/common/configs/config';
@@ -6,7 +6,9 @@ import config from 'src/common/configs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CrawlerModule } from './crawler/crawler.module';
 import { StatisticsModule } from './statistics/statistics.module';
-import { AppController } from "./app.controller";
+import { AppController } from './app.controller';
+import { JwtAuthMiddleware } from './common/middleware/jwt-auth.middleware';
+import { CrawlerController } from './crawler/crawler.controller';
 
 @Module({
   imports: [
@@ -23,4 +25,8 @@ import { AppController } from "./app.controller";
   controllers: [AppController],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtAuthMiddleware).forRoutes(CrawlerController);
+  }
+}

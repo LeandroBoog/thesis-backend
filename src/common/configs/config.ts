@@ -19,8 +19,8 @@ const config: Config = {
     expiresIn: '30m',
     bcryptSaltOrRound: 10,
   },
-  emailConfirmation: {
-    expiresIn: '24h',
+  auth: {
+    jwtToken: process.env.TOKEN || 'your-token',
   },
 };
 

@@ -3,7 +3,7 @@ export interface Config {
   cors: CorsConfig;
   swagger: SwaggerConfig;
   security: SecurityConfig;
-  emailConfirmation: EmailConfirmationConfig;
+  auth: AuthConfig;
 }
 
 export interface NestConfig {
@@ -28,6 +28,6 @@ export interface SecurityConfig {
   bcryptSaltOrRound: string | number;
 }
 
-export interface EmailConfirmationConfig {
-  expiresIn: string;
+export interface AuthConfig {
+  jwtToken: string;
 }

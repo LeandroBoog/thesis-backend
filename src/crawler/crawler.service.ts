@@ -129,7 +129,6 @@ export class CrawlerService {
     };
   }
 
-
   async filterCookies(crawlSessionId, cookies) {
     const alreadyStoredCookies = await this.cookieRepository
       .createQueryBuilder('cookie')
