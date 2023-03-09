@@ -19,6 +19,14 @@ import { TaintReportFactory } from '../factories/taint-report.factory';
 import { WebsiteFactory } from '../factories/website.factory';
 
 import { MainSeeder } from './main.seeder';
+import { CookieCollisionModel } from '../models/cookie-collision.model';
+import { GhostwritingPartnerModel } from '../models/ghostwriting-partner.model';
+import { GhostwrittenCookieModel } from '../models/ghostwritten-cookie.model';
+import { UrlModel } from '../models/url.model';
+import { CookieCollisionFactory } from '../factories/cookie-collision.factory';
+import { GhostwritingPartnerFactory } from '../factories/ghostwriting-partner.factory';
+import { GhostwrittenCookieFactory } from '../factories/ghostwritten-cookie.factory';
+import { UrlFactory } from '../factories/url.factory';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'better-sqlite3',
@@ -26,19 +34,27 @@ const options: DataSourceOptions & SeederOptions = {
   entities: [
     ArgumentModel,
     CookieModel,
+    CookieCollisionModel,
     CrawlSessionModel,
     FlowModel,
+    GhostwritingPartnerModel,
+    GhostwrittenCookieModel,
     TaintModel,
     TaintReportModel,
+    UrlModel,
     WebsiteModel,
   ],
   factories: [
     ArgumentFactory,
     CookieFactory,
+    CookieCollisionFactory,
     CrawlSessionFactory,
     FlowFactory,
+    GhostwritingPartnerFactory,
+    GhostwrittenCookieFactory,
     TaintFactory,
     TaintReportFactory,
+    UrlFactory,
     WebsiteFactory,
   ],
   seeds: [MainSeeder],
