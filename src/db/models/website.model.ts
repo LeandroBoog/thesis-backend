@@ -10,6 +10,7 @@ import {
 import { TaintReportModel } from './taint-report.model';
 import { CookieModel } from './cookie.model';
 import { CrawlSessionModel } from './crawl-session.model';
+import { CookieCollisionModel } from './cookie-collision.model';
 
 @Entity()
 export class WebsiteModel {
@@ -28,6 +29,11 @@ export class WebsiteModel {
     cascade: true,
   })
   taintReports: TaintReportModel[];
+
+  @OneToMany(() => TaintReportModel, (taintReport) => taintReport.website, {
+    cascade: true,
+  })
+  cookieCollisions: CookieCollisionModel[];
 
   @OneToMany(() => CookieModel, (cookie) => cookie.website, {
     cascade: true,

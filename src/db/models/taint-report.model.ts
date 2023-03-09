@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { TaintModel } from './taint.model';
 import { WebsiteModel } from './website.model';
+import { GhostwritingPartnerModel } from './ghostwriting-partner.model';
 
 @Entity()
 export class TaintReportModel {
@@ -25,12 +26,24 @@ export class TaintReportModel {
   isIdentifierCookie: boolean;
 
   @Column()
+  isFirstPartyGhostwriting: boolean;
+
+  @Column()
   sink: string;
 
   @OneToMany(() => TaintModel, (taint) => taint.taintReport, {
     cascade: true,
   })
   taints: TaintModel[];
+
+  @OneToMany(
+    () => GhostwritingPartnerModel,
+    (ghostwritingPartner) => ghostwritingPartner.taintReport,
+    {
+      cascade: true,
+    },
+  )
+  ghostwritingPartner: GhostwritingPartnerModel[];
 
   @ManyToOne(() => WebsiteModel, (website) => website.taintReports, {
     onDelete: 'CASCADE',

@@ -1,4 +1,11 @@
-import { Controller, Post, Body, UseInterceptors, Delete, Param } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  UseInterceptors,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CrawlerService } from './crawler.service';
 import { CreateWebsiteDto } from './dto/validation/create-website.dto';

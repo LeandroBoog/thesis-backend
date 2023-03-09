@@ -16,6 +16,7 @@ export const TaintReportFactory = setSeederFactory(
     ]);
     entry.taintedString = faker.datatype.string(10);
     entry.isIdentifierCookie = faker.datatype.boolean();
+    entry.isFirstPartyGhostwriting = faker.datatype.boolean();
     entry.sink = faker.helpers.arrayElement([
       'document.cookie',
       'document.write',
