@@ -5,8 +5,9 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { CreateCookieDto } from './create-cookie.dto';
+import { CreateWebsiteCookieDto } from './create-website-cookie.dto';
 import { CreateTaintReportDto } from './create-taint-report.dto';
+import { CreateWebsiteCollisionDto } from './create-website-collision.dto';
 import { Type } from 'class-transformer';
 
 export class CreateWebsiteDto {
@@ -16,15 +17,26 @@ export class CreateWebsiteDto {
   @IsString()
   url: string;
 
+  @IsNumber()
+  cookieCount: number;
+
+  @IsNumber()
+  identifierCount: number;
+
+  @IsDefined()
+  @Type(() => CreateWebsiteCollisionDto)
+  @ValidateNested({ each: true, message: 'website collision dto failed' })
+  cookieCollisions: CreateWebsiteCollisionDto[];
+
+  @ArrayNotEmpty()
+  @IsDefined()
+  @Type(() => CreateWebsiteCookieDto)
+  @ValidateNested({ each: true, message: 'cookies dto failed' })
+  cookies: CreateWebsiteCookieDto[];
+
   @ArrayNotEmpty()
   @IsDefined()
   @Type(() => CreateTaintReportDto)
   @ValidateNested({ each: true, message: 'taintReports dto failed' })
   taintReports: CreateTaintReportDto[];
-
-  @ArrayNotEmpty()
-  @IsDefined()
-  @Type(() => CreateCookieDto)
-  @ValidateNested({ each: true, message: 'cookies dto failed' })
-  cookies: CreateCookieDto[];
 }

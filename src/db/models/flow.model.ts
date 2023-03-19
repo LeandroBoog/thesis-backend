@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { TaintModel } from './taint.model';
-import { ArgumentModel } from './argument.model';
+import { FlowArgumentModel } from './flow-argument.model';
 
 @Entity()
 export class FlowModel {
@@ -36,10 +36,10 @@ export class FlowModel {
   @Column()
   scriptHash: string;
 
-  @OneToMany(() => ArgumentModel, (argument) => argument.value, {
+  @OneToMany(() => FlowArgumentModel, (argument) => argument.value, {
     cascade: true,
   })
-  arguments: ArgumentModel[];
+  arguments: FlowArgumentModel[];
 
   @ManyToOne(() => TaintModel, (taint) => taint.flows, {
     onDelete: 'CASCADE',

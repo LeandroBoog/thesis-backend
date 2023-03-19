@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class CreateArgumentDto {
+export class CreateWebsiteCollisionUrlModel {
   @IsString()
   value: string;
 }

@@ -6,6 +6,7 @@ export const TaintReportFactory = setSeederFactory(
   TaintReportModel,
   (faker: Faker) => {
     const entry = new TaintReportModel();
+    entry.domain = faker.internet.url();
     entry.script = faker.helpers.arrayElement([
       'http://squeaky-chess.biz',
       'http://brisk-army.info',
@@ -14,9 +15,9 @@ export const TaintReportFactory = setSeederFactory(
       'http://disguised-folder.info',
       'https://loud-inverse.info',
     ]);
+    entry.scriptDomain = faker.internet.url();
     entry.taintedString = faker.datatype.string(10);
-    entry.isIdentifierCookie = faker.datatype.boolean();
-    entry.isFirstPartyGhostwriting = faker.datatype.boolean();
+    entry.type = faker.datatype.string(5);
     entry.sink = faker.helpers.arrayElement([
       'document.cookie',
       'document.write',
@@ -27,6 +28,7 @@ export const TaintReportFactory = setSeederFactory(
       'setInterval',
       'setTimeout',
     ]);
+    entry.numberOfTaints = faker.datatype.number(2);
     return entry;
   },
 );

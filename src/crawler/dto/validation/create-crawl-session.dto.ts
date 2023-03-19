@@ -21,4 +21,13 @@ export class CreateCrawlSessionDto {
 
   @IsBoolean()
   randomizeLinks: boolean;
+
+  @IsBoolean()
+  trackingProtection: boolean;
+
+  @IsNumber()
+  networkCookieBehaviour: number;
+
+  @IsBoolean()
+  cookieBlocker: boolean;
 }

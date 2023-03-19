@@ -10,6 +10,7 @@ import {
 import { TaintModel } from './taint.model';
 import { WebsiteModel } from './website.model';
 import { GhostwritingPartnerModel } from './ghostwriting-partner.model';
+import { WebsiteCookieModel } from './website-cookie.model';
 
 @Entity()
 export class TaintReportModel {
@@ -17,19 +18,25 @@ export class TaintReportModel {
   id: number;
 
   @Column()
+  domain: string;
+
+  @Column()
   script: string;
+
+  @Column()
+  scriptDomain: string;
 
   @Column()
   taintedString: string;
 
   @Column()
-  isIdentifierCookie: boolean;
-
-  @Column()
-  isFirstPartyGhostwriting: boolean;
+  type: string;
 
   @Column()
   sink: string;
+
+  @Column()
+  numberOfTaints: number;
 
   @OneToMany(() => TaintModel, (taint) => taint.taintReport, {
     cascade: true,

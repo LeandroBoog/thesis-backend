@@ -2,17 +2,18 @@ import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { faker } from '@faker-js/faker';
 
-import { ArgumentModel } from '../models/argument.model';
-import { CookieModel } from '../models/cookie.model';
+import { FlowArgumentModel } from '../models/flow-argument.model';
+import { WebsiteCookieModel } from '../models/website-cookie.model';
 import { CrawlSessionModel } from '../models/crawl-session.model';
 import { FlowModel } from '../models/flow.model';
 import { TaintModel } from '../models/taint.model';
 import { TaintReportModel } from '../models/taint-report.model';
 import { WebsiteModel } from '../models/website.model';
-import { UrlModel } from '../models/url.model';
-import { CookieCollisionModel } from '../models/cookie-collision.model';
+import { WebsiteCookieCollisionUrlModel } from '../models/website-cookie-collision-url.model';
+import { WebsiteCookieCollisionModel } from '../models/website-cookie-collision.model';
 import { GhostwritingPartnerModel } from '../models/ghostwriting-partner.model';
-import { GhostwrittenCookieModel } from '../models/ghostwritten-cookie.model';
+import { GhostwritingPartnerCookieModel } from '../models/ghostwriting-partner-cookie.model';
+import { GhostwritingPartnerUrlModel } from '../models/ghostwriting-partner-url.model';
 
 export class MainSeeder implements Seeder {
   public async run(
@@ -47,24 +48,24 @@ export class MainSeeder implements Seeder {
       amount: amountOfCookies,
       foreignKey: 'website',
       associateTo: websites,
-      factory: await factoryManager.get(CookieModel),
-      repository: dataSource.getRepository(CookieModel),
+      factory: await factoryManager.get(WebsiteCookieModel),
+      repository: dataSource.getRepository(WebsiteCookieModel),
     });
 
     const cookieCollisions = await this.createAndAddToRelation({
       amount: amountOfCookieCollisions,
       foreignKey: 'website',
       associateTo: websites,
-      factory: await factoryManager.get(CookieCollisionModel),
-      repository: dataSource.getRepository(CookieCollisionModel),
+      factory: await factoryManager.get(WebsiteCookieCollisionModel),
+      repository: dataSource.getRepository(WebsiteCookieCollisionModel),
     });
 
-    const urls = await this.createAndAddToRelation({
+    const cookieCollisionUrls = await this.createAndAddToRelation({
       amount: amountOfUrls,
       foreignKey: 'cookieCollision',
       associateTo: cookieCollisions,
-      factory: await factoryManager.get(UrlModel),
-      repository: dataSource.getRepository(UrlModel),
+      factory: await factoryManager.get(WebsiteCookieCollisionUrlModel),
+      repository: dataSource.getRepository(WebsiteCookieCollisionUrlModel),
     });
 
     const taintReports = await this.createAndAddToRelation({
@@ -95,8 +96,8 @@ export class MainSeeder implements Seeder {
       amount: amountOfArguments,
       foreignKey: 'flow',
       associateTo: flows,
-      factory: await factoryManager.get(ArgumentModel),
-      repository: dataSource.getRepository(ArgumentModel),
+      factory: await factoryManager.get(FlowArgumentModel),
+      repository: dataSource.getRepository(FlowArgumentModel),
     });
 
     const ghostwritingPartners = await this.createAndAddToRelation({
@@ -107,12 +108,20 @@ export class MainSeeder implements Seeder {
       repository: dataSource.getRepository(GhostwritingPartnerModel),
     });
 
-    const ghostwrittenCookies = await this.createAndAddToRelation({
+    const ghostwritingPartnerCookies = await this.createAndAddToRelation({
       amount: amountOfGhostwrittenCookies,
       foreignKey: 'ghostwritingPartner',
       associateTo: ghostwritingPartners,
-      factory: await factoryManager.get(GhostwrittenCookieModel),
-      repository: dataSource.getRepository(GhostwrittenCookieModel),
+      factory: await factoryManager.get(GhostwritingPartnerCookieModel),
+      repository: dataSource.getRepository(GhostwritingPartnerCookieModel),
+    });
+
+    const ghostwritingPartnerUrls = await this.createAndAddToRelation({
+      amount: amountOfGhostwrittenCookies * 2,
+      foreignKey: 'ghostwritingPartner',
+      associateTo: ghostwritingPartners,
+      factory: await factoryManager.get(GhostwritingPartnerUrlModel),
+      repository: dataSource.getRepository(GhostwritingPartnerUrlModel),
     });
   }
 

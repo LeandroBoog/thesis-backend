@@ -2,6 +2,7 @@ import {
   ArrayNotEmpty,
   IsDefined,
   IsNumber,
+  IsString,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -13,6 +14,9 @@ export class CreateTaintDto {
 
   @IsNumber()
   end: number;
+
+  @IsString()
+  cookieString: string;
 
   @ArrayNotEmpty()
   @IsDefined()

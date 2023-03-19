@@ -6,10 +6,10 @@ import {
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { CookieCollisionModel } from './cookie-collision.model';
+import { WebsiteCookieCollisionModel } from './website-cookie-collision.model';
 
 @Entity()
-export class UrlModel {
+export class WebsiteCookieCollisionUrlModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,13 +17,13 @@ export class UrlModel {
   value: string;
 
   @ManyToOne(
-    () => CookieCollisionModel,
+    () => WebsiteCookieCollisionModel,
     (cookieCollision) => cookieCollision.urls,
     {
       onDelete: 'CASCADE',
     },
   )
-  cookieCollision: CookieCollisionModel;
+  cookieCollision: WebsiteCookieCollisionModel;
 
   @CreateDateColumn()
   createdAt: string;

@@ -8,9 +8,9 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { TaintReportModel } from './taint-report.model';
-import { CookieModel } from './cookie.model';
+import { WebsiteCookieModel } from './website-cookie.model';
 import { CrawlSessionModel } from './crawl-session.model';
-import { CookieCollisionModel } from './cookie-collision.model';
+import { WebsiteCookieCollisionModel } from './website-cookie-collision.model';
 
 @Entity()
 export class WebsiteModel {
@@ -19,6 +19,12 @@ export class WebsiteModel {
 
   @Column()
   url: string;
+
+  @Column()
+  cookieCount: number;
+
+  @Column()
+  identifierCount: number;
 
   @ManyToOne(() => CrawlSessionModel, (crawlSession) => crawlSession.websites, {
     onDelete: 'CASCADE',
@@ -30,15 +36,19 @@ export class WebsiteModel {
   })
   taintReports: TaintReportModel[];
 
-  @OneToMany(() => TaintReportModel, (taintReport) => taintReport.website, {
+  @OneToMany(() => WebsiteCookieModel, (cookie) => cookie.website, {
     cascade: true,
   })
-  cookieCollisions: CookieCollisionModel[];
+  cookies: WebsiteCookieModel[];
 
-  @OneToMany(() => CookieModel, (cookie) => cookie.website, {
-    cascade: true,
-  })
-  cookies: CookieModel[];
+  @OneToMany(
+    () => WebsiteCookieCollisionModel,
+    (collision) => collision.website,
+    {
+      cascade: true,
+    },
+  )
+  cookieCollisions: WebsiteCookieCollisionModel[];
 
   @CreateDateColumn()
   createdAt: string;

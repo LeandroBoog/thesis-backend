@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { StatisticsService } from './statistics.service';
 import { StatisticsController } from './statistics.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CookieModel } from '../db/models/cookie.model';
+import { WebsiteCookieModel } from '../db/models/website-cookie.model';
 import { FlowModel } from '../db/models/flow.model';
 import { TaintModel } from '../db/models/taint.model';
 import { TaintReportModel } from '../db/models/taint-report.model';
@@ -13,7 +13,7 @@ import { CrawlSessionModel } from '../db/models/crawl-session.model';
   imports: [
     TypeOrmModule.forFeature([
       CrawlSessionModel,
-      CookieModel,
+      WebsiteCookieModel,
       FlowModel,
       TaintModel,
       TaintReportModel,

@@ -2,16 +2,14 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
+  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
-  ManyToOne,
 } from 'typeorm';
-import { UrlModel } from './url.model';
 import { WebsiteModel } from './website.model';
 
 @Entity()
-export class CookieCollisionModel {
+export class WebsiteCookieModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,12 +19,19 @@ export class CookieCollisionModel {
   @Column()
   value: string;
 
-  @OneToMany(() => UrlModel, (url) => url.value, {
-    cascade: true,
-  })
-  urls: UrlModel[];
+  @Column()
+  type: string;
 
-  @ManyToOne(() => WebsiteModel, (website) => website.cookieCollisions, {
+  @Column()
+  origin: string;
+
+  @Column()
+  isIdentifier: boolean;
+
+  @Column()
+  hash: string;
+
+  @ManyToOne(() => WebsiteModel, (website) => website.cookies, {
     onDelete: 'CASCADE',
   })
   website: WebsiteModel;

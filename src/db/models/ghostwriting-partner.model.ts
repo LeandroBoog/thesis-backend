@@ -1,6 +1,5 @@
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
@@ -8,24 +7,31 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { TaintReportModel } from './taint-report.model';
-import { GhostwrittenCookieModel } from './ghostwritten-cookie.model';
+import { GhostwritingPartnerCookieModel } from './ghostwriting-partner-cookie.model';
+import { GhostwritingPartnerUrlModel } from './ghostwriting-partner-url.model';
 
 @Entity()
 export class GhostwritingPartnerModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  origin: string;
-
   @OneToMany(
-    () => GhostwrittenCookieModel,
+    () => GhostwritingPartnerCookieModel,
     (ghostwrittenCookie) => ghostwrittenCookie.ghostwritingPartner,
     {
       cascade: true,
     },
   )
-  ghostwrittenCookies: GhostwrittenCookieModel[];
+  cookie: GhostwritingPartnerCookieModel[];
+
+  @OneToMany(
+    () => GhostwritingPartnerUrlModel,
+    (ghostwritingPartnerUrl) => ghostwritingPartnerUrl.ghostwritingPartner,
+    {
+      cascade: true,
+    },
+  )
+  partners: GhostwritingPartnerUrlModel[];
 
   @ManyToOne(
     () => TaintReportModel,

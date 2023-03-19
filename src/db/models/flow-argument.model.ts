@@ -9,7 +9,7 @@ import {
 import { FlowModel } from './flow.model';
 
 @Entity()
-export class ArgumentModel {
+export class FlowArgumentModel {
   @PrimaryGeneratedColumn()
   id: number;
 

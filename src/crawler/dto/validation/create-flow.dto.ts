@@ -1,5 +1,4 @@
 import {
-  ArrayNotEmpty,
   IsBoolean,
   IsDefined,
   IsNumber,
@@ -7,7 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { CreateArgumentDto } from './create-argument.dto';
+import { CreateFlowArgumentDto } from './create-flow-argument.dto';
 
 export class CreateFlowDto {
   @IsString()
@@ -32,7 +31,7 @@ export class CreateFlowDto {
   scriptHash: string;
 
   @IsDefined()
-  @Type(() => CreateArgumentDto)
+  @Type(() => CreateFlowArgumentDto)
   @ValidateNested({ each: true, message: 'arguments dto failed' })
-  arguments: CreateArgumentDto[];
+  arguments: CreateFlowArgumentDto[];
 }

@@ -1,11 +1,11 @@
 import { Faker } from '@faker-js/faker';
 import { setSeederFactory } from 'typeorm-extension';
-import { ArgumentModel } from '../models/argument.model';
+import { FlowArgumentModel } from '../models/flow-argument.model';
 
-export const ArgumentFactory = setSeederFactory(
-  ArgumentModel,
+export const FlowArgumentFactory = setSeederFactory(
+  FlowArgumentModel,
   (faker: Faker) => {
-    const entry = new ArgumentModel();
+    const entry = new FlowArgumentModel();
     entry.value = faker.datatype.string(10);
     return entry;
   },

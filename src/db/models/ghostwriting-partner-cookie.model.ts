@@ -7,11 +7,10 @@ import {
   OneToMany,
   ManyToOne,
 } from 'typeorm';
-import { TaintReportModel } from './taint-report.model';
 import { GhostwritingPartnerModel } from './ghostwriting-partner.model';
 
 @Entity()
-export class GhostwrittenCookieModel {
+export class GhostwritingPartnerCookieModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,9 +20,21 @@ export class GhostwrittenCookieModel {
   @Column()
   value: string;
 
+  @Column()
+  origin: string;
+
+  @Column()
+  type: string;
+
+  @Column()
+  isIdentifier: boolean;
+
+  @Column()
+  hash: string;
+
   @ManyToOne(
     () => GhostwritingPartnerModel,
-    (ghostwritingPartner) => ghostwritingPartner.ghostwrittenCookies,
+    (ghostwritingPartner) => ghostwritingPartner.cookie,
     {
       onDelete: 'CASCADE',
     },
