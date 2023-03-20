@@ -22,8 +22,8 @@ import { WebsiteCookieCollisionUrlModel } from '../db/models/website-cookie-coll
   imports: [
     TypeOrmModule.forFeature([
       CrawlSessionModel,
-      FlowArgumentModel,
       FlowModel,
+      FlowArgumentModel,
       GhostwritingPartnerModel,
       GhostwritingPartnerCookieModel,
       GhostwritingPartnerUrlModel,

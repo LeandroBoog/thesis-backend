@@ -7,6 +7,11 @@ import { StatisticsService } from './statistics.service';
 export class StatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
 
+  @Get('latestInsert')
+  find() {
+    return this.statisticsService.getLatestInsert();
+  }
+
   @Get('')
   findAll(@Query('types', ParseArrayPipe) types: string[]) {
     return this.statisticsService.gatherStatistics(types);

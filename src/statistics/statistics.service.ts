@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CrawlSessionModel } from '../db/models/crawl-session.model';
 import { QueryDataTransformer } from '../common/helpers/QueryDataTransformer';
 import { SessionEntity } from './entities/session.entity';
+import moment from 'moment';
 
 @Injectable()
 export class StatisticsService {
@@ -11,6 +12,23 @@ export class StatisticsService {
     @InjectRepository(CrawlSessionModel)
     private crawlSessionRepository: Repository<CrawlSessionModel>,
   ) {}
+
+  async getLatestInsert() {
+    const { timestamp } = await this.crawlSessionRepository
+      .createQueryBuilder('crawl')
+      .select('crawl')
+      .addSelect('websites.updatedAt AS timestamp')
+      .innerJoin('crawl.websites', 'websites')
+      .orderBy('websites.updatedAt')
+      .getRawOne();
+
+    const now = Number(new Date());
+    const difference = now - Number(new Date(timestamp));
+    return {
+      timestamp,
+      lastInsert: Math.round(difference / 1000 / 60) + 'm ago',
+    };
+  }
 
   async gatherStatistics(requestedStatistics) {
     const availableStatistics = [
