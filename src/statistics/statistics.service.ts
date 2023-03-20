@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { CrawlSessionModel } from '../db/models/crawl-session.model';
 import { QueryDataTransformer } from '../common/helpers/QueryDataTransformer';
 import { SessionEntity } from './entities/session.entity';
-import moment from 'moment';
 
 @Injectable()
 export class StatisticsService {
@@ -55,6 +54,14 @@ export class StatisticsService {
   async findAllSessions() {
     const query = await this.crawlSessionRepository.find({});
     return query.map((session) => new SessionEntity(session));
+  }
+
+  baseQueryBuilder() {
+    return this.crawlSessionRepository
+      .createQueryBuilder('crawl')
+      .select('crawl')
+      .groupBy('crawl.id')
+      .orderBy('crawl.id');
   }
 
   async mostUsedSinks() {
@@ -167,6 +174,98 @@ export class StatisticsService {
     };
   }
 
+  async mostUsedOperations() {
+    const query = await this.crawlSessionRepository
+      .createQueryBuilder('crawl')
+      .select('crawl')
+      .addSelect('flows.operation AS operation')
+      .addSelect('COUNT(flows.id) AS total')
+      .innerJoin('crawl.websites', 'websites')
+      .innerJoin('websites.taintReports', 'taintReports')
+      .innerJoin('taintReports.taints', 'taints')
+      .innerJoin('taints.flows', 'flows')
+      .groupBy('crawl.id')
+      .addGroupBy('operation')
+      .orderBy('crawl.id')
+      .addOrderBy('total', 'DESC')
+      .getRawMany();
+
+    return {
+      type: 'mostUsedOperations',
+      data: QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
+        ['operation', 'total'],
+        query,
+      ),
+    };
+  }
+
+  async amountOfCookiesSet() {
+    const query = await this.baseQueryBuilder()
+      .addSelect('COUNT(cookie.id) AS total')
+      .innerJoin('crawl.websites', 'websites')
+      .innerJoin('websites.cookies', 'cookies')
+      .addOrderBy('total', 'DESC')
+      .getRawMany();
+
+    return {
+      type: 'amountOfCookiesSet',
+      data: QueryDataTransformer.transformSingleCountData(query),
+    };
+  }
+
+  async amountOfIdentifierCookies() {
+    const query = await this.baseQueryBuilder()
+      .addSelect('COUNT(cookie.id) AS total')
+      .innerJoin('crawl.websites', 'websites')
+      .innerJoin('websites.cookies', 'cookies')
+      .where('cookie.isIdentifier = :isIdentifier', {
+        isIdentifier: true,
+      })
+      .addOrderBy('total', 'DESC')
+      .getRawMany();
+
+    return {
+      type: 'amountOfIdentifierCookies',
+      data: QueryDataTransformer.transformSingleCountData(query),
+    };
+  }
+
+  async amountOfCookieCollisions() {
+    const query = await this.baseQueryBuilder()
+      .addSelect('COUNT(collisions.id) AS total')
+      .innerJoin('crawl.websites', 'websites')
+      .innerJoin('websites.cookieCollisions', 'collisions')
+      .addOrderBy('total', 'DESC')
+      .getRawMany();
+
+    return {
+      type: 'amountOfCookieCollisions',
+      data: QueryDataTransformer.transformSingleCountData(query),
+    };
+  }
+
+  async websiteWithMostCollisions() {
+    const query = await this.baseQueryBuilder()
+      .addSelect('website.url AS url')
+      .addSelect('COUNT(collisions.id) AS total')
+      .innerJoin('crawl.websites', 'websites')
+      .innerJoin('websites.cookieCollisions', 'collisions')
+      .addGroupBy('url')
+      .addOrderBy('total', 'DESC')
+      .getRawMany();
+
+    return {
+      type: 'websiteWithMostCollisions',
+      data: QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
+        ['url', 'total'],
+        query,
+      ),
+    };
+  }
+}
+
+/*
+
   async bySession() {
     const query = await this.crawlSessionRepository
       .createQueryBuilder('crawl')
@@ -186,9 +285,6 @@ export class StatisticsService {
       data: query,
     };
   }
-}
-
-/*
 
 sinks listed from most used to least ✔️
 
