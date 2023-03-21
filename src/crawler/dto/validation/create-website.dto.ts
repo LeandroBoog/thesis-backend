@@ -17,12 +17,6 @@ export class CreateWebsiteDto {
   @IsString()
   url: string;
 
-  @IsNumber()
-  cookieCount: number;
-
-  @IsNumber()
-  identifierCount: number;
-
   @IsDefined()
   @Type(() => CreateWebsiteCollisionDto)
   @ValidateNested({ each: true, message: 'website collision dto failed' })

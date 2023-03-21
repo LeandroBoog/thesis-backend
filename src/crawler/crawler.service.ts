@@ -98,8 +98,6 @@ export class CrawlerService {
 
   async addDataToWebsiteOfSession({
     url,
-    cookieCount,
-    identifierCount,
     crawlSessionId,
     taintReports,
     cookies,
@@ -127,9 +125,6 @@ export class CrawlerService {
     const newCollisions =
       this.cookieCollisionRepository.create(cookieCollisions);
     website.cookieCollisions.push(...newCollisions);
-
-    website.identifierCount += identifierCount;
-    website.cookieCount += cookieCount;
 
     await this.websiteRepository.save(website);
 
