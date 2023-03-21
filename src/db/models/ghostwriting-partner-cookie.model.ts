@@ -29,9 +29,6 @@ export class GhostwritingPartnerCookieModel {
   @Column()
   isIdentifier: boolean;
 
-  @Column()
-  hash: string;
-
   @ManyToOne(
     () => GhostwritingPartnerModel,
     (ghostwritingPartner) => ghostwritingPartner.cookie,

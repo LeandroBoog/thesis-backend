@@ -11,7 +11,6 @@ export const GhostwritingPartnerCookieFactory = setSeederFactory(
     entry.origin = faker.datatype.string(5);
     entry.type = faker.datatype.string(10);
     entry.isIdentifier = faker.datatype.boolean();
-    entry.hash = faker.datatype.string(5);
     return entry;
   },
 );

@@ -20,12 +20,6 @@ export class WebsiteModel {
   @Column()
   url: string;
 
-  @Column()
-  cookieCount: number;
-
-  @Column()
-  identifierCount: number;
-
   @ManyToOne(() => CrawlSessionModel, (crawlSession) => crawlSession.websites, {
     onDelete: 'CASCADE',
   })

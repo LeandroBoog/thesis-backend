@@ -13,7 +13,7 @@ export class StatisticsService {
   ) {}
 
   async getLatestInsert() {
-    const { timestamp } = await this.crawlSessionRepository
+    const query = await this.crawlSessionRepository
       .createQueryBuilder('crawl')
       .select('crawl')
       .addSelect('websites.updatedAt AS timestamp')
@@ -21,6 +21,12 @@ export class StatisticsService {
       .orderBy('websites.updatedAt')
       .getRawOne();
 
+    if (!query)
+      return {
+        message: 'No insertions found!',
+      };
+
+    const timestamp = query.timestamp;
     const now = Number(new Date());
     const difference = now - Number(new Date(timestamp));
     return {

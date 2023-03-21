@@ -10,7 +10,5 @@ export const WebsiteFactory = setSeederFactory(WebsiteModel, (faker: Faker) => {
     'http://thoughtful-worry.biz',
     'https://rash-marmalade.com',
   ]);
-  entry.cookieCount = faker.datatype.number(10);
-  entry.identifierCount = faker.datatype.number(10);
   return entry;
 });

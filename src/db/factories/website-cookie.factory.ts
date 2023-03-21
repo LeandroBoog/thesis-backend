@@ -11,7 +11,6 @@ export const WebsiteCookieFactory = setSeederFactory(
     entry.origin = faker.internet.url();
     entry.type = faker.datatype.string(10);
     entry.isIdentifier = faker.datatype.boolean();
-    entry.hash = faker.datatype.string(10);
     return entry;
   },
 );

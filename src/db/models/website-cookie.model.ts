@@ -28,9 +28,6 @@ export class WebsiteCookieModel {
   @Column()
   isIdentifier: boolean;
 
-  @Column()
-  hash: string;
-
   @ManyToOne(() => WebsiteModel, (website) => website.cookies, {
     onDelete: 'CASCADE',
   })
