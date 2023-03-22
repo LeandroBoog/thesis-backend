@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
 
 export class CreateWebsiteCookieDto {
   @IsString()
@@ -15,7 +15,4 @@ export class CreateWebsiteCookieDto {
 
   @IsBoolean()
   isIdentifier: boolean;
-
-  @IsString()
-  hash: string;
 }

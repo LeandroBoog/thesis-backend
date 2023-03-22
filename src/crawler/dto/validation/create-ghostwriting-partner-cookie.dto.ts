@@ -15,7 +15,4 @@ export class CreateGhostwritingPartnerCookieDto {
 
   @IsBoolean()
   isIdentifier: boolean;
-
-  @IsString()
-  hash: string;
 }
