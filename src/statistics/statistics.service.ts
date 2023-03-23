@@ -42,6 +42,11 @@ export class StatisticsService {
       'websiteWithMostGhostwriting',
       'totalGhostwritingReports',
       'totalFlowsWithRelevantSource',
+      'mostUsedOperations',
+      'amountOfCookiesSet',
+      'amountOfIdentifierCookies',
+      'amountOfCookieCollisions',
+      'websiteWithMostCollisions',
     ];
 
     const statisticsToGather =
@@ -66,20 +71,16 @@ export class StatisticsService {
     return this.crawlSessionRepository
       .createQueryBuilder('crawl')
       .select('crawl')
+      .innerJoin('crawl.websites', 'websites')
       .groupBy('crawl.id')
       .orderBy('crawl.id');
   }
 
   async mostUsedSinks() {
-    const query = await this.crawlSessionRepository
-      .createQueryBuilder('crawl')
-      .select('crawl')
+    const query = await this.baseQueryBuilder()
       .addSelect('COUNT(taintReports.sink) AS total, taintReports.sink AS sink')
-      .innerJoin('crawl.websites', 'websites')
       .innerJoin('websites.taintReports', 'taintReports')
-      .groupBy('crawl.id')
       .addGroupBy('sink')
-      .orderBy('crawl.id')
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
@@ -93,17 +94,12 @@ export class StatisticsService {
   }
 
   async mostCommonScriptOrigins() {
-    const query = await this.crawlSessionRepository
-      .createQueryBuilder('crawl')
-      .select('crawl')
+    const query = await this.baseQueryBuilder()
       .addSelect(
         'COUNT(taintReports.script) AS total, taintReports.script AS script',
       )
-      .innerJoin('crawl.websites', 'websites')
       .innerJoin('websites.taintReports', 'taintReports')
-      .groupBy('crawl.id')
       .addGroupBy('script')
-      .orderBy('crawl.id')
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
@@ -118,16 +114,11 @@ export class StatisticsService {
 
   async websiteWithMostGhostwriting() {
     // https://github.com/typeorm/typeorm/issues/6561
-    const query = await this.crawlSessionRepository
-      .createQueryBuilder('crawl')
-      .select('crawl')
+    const query = await this.baseQueryBuilder()
       .addSelect('websites.url AS url')
       .addSelect('COUNT(taintReports.id) AS total')
-      .innerJoin('crawl.websites', 'websites')
       .innerJoin('websites.taintReports', 'taintReports')
-      .groupBy('crawl.id')
       .addGroupBy('url')
-      .orderBy('crawl.id')
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
@@ -141,13 +132,9 @@ export class StatisticsService {
   }
 
   async totalGhostwritingReports() {
-    const query = await this.crawlSessionRepository
-      .createQueryBuilder('crawl')
-      .select('crawl')
+    const query = await this.baseQueryBuilder()
       .addSelect('COUNT(taintReports.id) AS total')
-      .innerJoin('crawl.websites', 'websites')
       .innerJoin('websites.taintReports', 'taintReports')
-      .groupBy('crawl.id')
       .orderBy('total', 'DESC')
       .getRawMany();
 
@@ -158,11 +145,8 @@ export class StatisticsService {
   }
 
   async totalFlowsWithRelevantSource() {
-    const query = await this.crawlSessionRepository
-      .createQueryBuilder('crawl')
-      .select('crawl')
+    const query = await this.baseQueryBuilder()
       .addSelect('COUNT(flows.id) AS total')
-      .innerJoin('crawl.websites', 'websites')
       .innerJoin('websites.taintReports', 'taintReports')
       .innerJoin('taintReports.taints', 'taints')
       .innerJoin('taints.flows', 'flows')
@@ -170,7 +154,6 @@ export class StatisticsService {
         source: true,
         operation: 'document.cookie',
       })
-      .groupBy('crawl.id')
       .orderBy('total', 'DESC')
       .getRawMany();
 
@@ -181,18 +164,13 @@ export class StatisticsService {
   }
 
   async mostUsedOperations() {
-    const query = await this.crawlSessionRepository
-      .createQueryBuilder('crawl')
-      .select('crawl')
+    const query = await this.baseQueryBuilder()
       .addSelect('flows.operation AS operation')
       .addSelect('COUNT(flows.id) AS total')
-      .innerJoin('crawl.websites', 'websites')
       .innerJoin('websites.taintReports', 'taintReports')
       .innerJoin('taintReports.taints', 'taints')
       .innerJoin('taints.flows', 'flows')
-      .groupBy('crawl.id')
       .addGroupBy('operation')
-      .orderBy('crawl.id')
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
@@ -207,8 +185,7 @@ export class StatisticsService {
 
   async amountOfCookiesSet() {
     const query = await this.baseQueryBuilder()
-      .addSelect('COUNT(cookie.id) AS total')
-      .innerJoin('crawl.websites', 'websites')
+      .addSelect('COUNT(cookies.id) AS total')
       .innerJoin('websites.cookies', 'cookies')
       .addOrderBy('total', 'DESC')
       .getRawMany();
@@ -221,10 +198,9 @@ export class StatisticsService {
 
   async amountOfIdentifierCookies() {
     const query = await this.baseQueryBuilder()
-      .addSelect('COUNT(cookie.id) AS total')
-      .innerJoin('crawl.websites', 'websites')
+      .addSelect('COUNT(cookies.id) AS total')
       .innerJoin('websites.cookies', 'cookies')
-      .where('cookie.isIdentifier = :isIdentifier', {
+      .where('cookies.isIdentifier = :isIdentifier', {
         isIdentifier: true,
       })
       .addOrderBy('total', 'DESC')
@@ -239,7 +215,6 @@ export class StatisticsService {
   async amountOfCookieCollisions() {
     const query = await this.baseQueryBuilder()
       .addSelect('COUNT(collisions.id) AS total')
-      .innerJoin('crawl.websites', 'websites')
       .innerJoin('websites.cookieCollisions', 'collisions')
       .addOrderBy('total', 'DESC')
       .getRawMany();
@@ -252,9 +227,8 @@ export class StatisticsService {
 
   async websiteWithMostCollisions() {
     const query = await this.baseQueryBuilder()
-      .addSelect('website.url AS url')
+      .addSelect('websites.url AS url')
       .addSelect('COUNT(collisions.id) AS total')
-      .innerJoin('crawl.websites', 'websites')
       .innerJoin('websites.cookieCollisions', 'collisions')
       .addGroupBy('url')
       .addOrderBy('total', 'DESC')
@@ -305,46 +279,5 @@ and which were they
 
 by how many subpages were visited
 
-    // https://stackoverflow.com/questions/66307587/typeorm-how-to-add-count-field-when-using-getmany
-
-await this.websiteRepository
-      .createQueryBuilder('website')
-      .loadRelationCountAndMap('website.total', 'website.taintReports')
-      .getMany();
-
-  async totalFlowsWithRelevantSource() {
-    const [, flowCount] = await this.flowRepository.findAndCountBy({
-      source: true,
-      operation: 'document.cookie',
-    });
-    return {
-      type: 'totalFlowsWithRelevantSource',
-      data: flowCount,
-    };
-  }
-
-
-    const mostUsedSinks = await this.taintReportRepository
-      .createQueryBuilder('report')
-      .addSelect('COUNT(report.sink) AS total, report.sink AS sink')
-      .groupBy('report.sink')
-      .orderBy('total', 'DESC')
-      .getRawMany();
-
-
-          const mostCommonScripts= await this.taintReportRepository
-      .createQueryBuilder('report')
-      .addSelect('COUNT(report.script) AS total, report.script AS script')
-      .groupBy('report.script')
-      .orderBy('total', 'DESC')
-      .getRawMany();
-
-          const websitesWithMostGhostwriting = await this.websiteRepository
-      .createQueryBuilder('website')
-      .select('website.url AS url')
-      .addSelect('COUNT(taintReports.id) AS total')
-      .leftJoin('website.taintReports', 'taintReports')
-      .groupBy('website.url')
-      .orderBy('total', 'DESC')
-      .execute();
+// https://stackoverflow.com/questions/66307587/typeorm-how-to-add-count-field-when-using-getmany
  */
