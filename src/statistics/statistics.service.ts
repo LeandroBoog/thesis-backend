@@ -49,6 +49,8 @@ export class StatisticsService {
       'websiteWithMostCollisions',
       'amountOfWebsitesWithGhostwriting',
       'amountOfWebsitesWithCollisions',
+      'amountOfSelfGhostwriting',
+      'amountOfOtherGhostwriting',
     ];
 
     const statisticsToGather =
@@ -237,6 +239,26 @@ export class StatisticsService {
       .getRawMany();
 
     return QueryDataTransformer.transformSingleCountData(query);
+  }
+
+  async amountOfGhostwritingType(type) {
+    const query = await this.baseQueryBuilder()
+      .addSelect('COUNT(taintReports.id) AS total')
+      .innerJoin('websites.taintReports', 'taintReports')
+      .where('taintReports.type = :type', {
+        type,
+      })
+      .getRawMany();
+
+    return QueryDataTransformer.transformSingleCountData(query);
+  }
+
+  async amountOfSelfGhostwriting() {
+    return await this.amountOfGhostwritingType('self');
+  }
+
+  async amountOfOtherGhostwriting() {
+    return await this.amountOfGhostwritingType('other');
   }
 }
 

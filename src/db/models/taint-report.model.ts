@@ -10,7 +10,6 @@ import {
 import { TaintModel } from './taint.model';
 import { WebsiteModel } from './website.model';
 import { GhostwritingPartnerModel } from './ghostwriting-partner.model';
-import { WebsiteCookieModel } from './website-cookie.model';
 
 @Entity()
 export class TaintReportModel {
