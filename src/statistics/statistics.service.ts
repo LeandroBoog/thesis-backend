@@ -47,6 +47,8 @@ export class StatisticsService {
       'amountOfIdentifierCookies',
       'amountOfCookieCollisions',
       'websiteWithMostCollisions',
+      'amountOfWebsitesWithGhostwriting',
+      'amountOfWebsitesWithCollisions',
     ];
 
     const statisticsToGather =
@@ -55,10 +57,14 @@ export class StatisticsService {
         : availableStatistics.filter((stat) =>
             requestedStatistics.includes(stat),
           );
-
     return {
       sessions: await this.findAllSessions(),
-      data: await Promise.all(statisticsToGather.map((type) => this[type]())),
+      data: await Promise.all(
+        statisticsToGather.map(async (type) => ({
+          type,
+          data: await this[type](),
+        })),
+      ),
     };
   }
 
@@ -84,13 +90,10 @@ export class StatisticsService {
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
-    return {
-      type: 'mostUsedSinks',
-      data: QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
-        ['sink', 'total'],
-        query,
-      ),
-    };
+    return QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
+      ['sink', 'total'],
+      query,
+    );
   }
 
   async mostCommonScriptOrigins() {
@@ -103,13 +106,10 @@ export class StatisticsService {
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
-    return {
-      type: 'mostCommonScriptOrigins',
-      data: QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
-        ['script', 'total'],
-        query,
-      ),
-    };
+    return QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
+      ['script', 'total'],
+      query,
+    );
   }
 
   async websiteWithMostGhostwriting() {
@@ -122,13 +122,10 @@ export class StatisticsService {
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
-    return {
-      type: 'websiteWithMostGhostwriting',
-      data: QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
-        ['url', 'total'],
-        query,
-      ),
-    };
+    return QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
+      ['url', 'total'],
+      query,
+    );
   }
 
   async totalGhostwritingReports() {
@@ -138,10 +135,7 @@ export class StatisticsService {
       .orderBy('total', 'DESC')
       .getRawMany();
 
-    return {
-      type: 'totalGhostwritingReports',
-      data: QueryDataTransformer.transformSingleCountData(query),
-    };
+    return QueryDataTransformer.transformSingleCountData(query);
   }
 
   async totalFlowsWithRelevantSource() {
@@ -157,10 +151,7 @@ export class StatisticsService {
       .orderBy('total', 'DESC')
       .getRawMany();
 
-    return {
-      type: 'totalFlowsWithRelevantSource',
-      data: QueryDataTransformer.transformSingleCountData(query),
-    };
+    return QueryDataTransformer.transformSingleCountData(query);
   }
 
   async mostUsedOperations() {
@@ -170,17 +161,17 @@ export class StatisticsService {
       .innerJoin('websites.taintReports', 'taintReports')
       .innerJoin('taintReports.taints', 'taints')
       .innerJoin('taints.flows', 'flows')
+      .where('operation != :operation', {
+        operation: 'function',
+      })
       .addGroupBy('operation')
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
-    return {
-      type: 'mostUsedOperations',
-      data: QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
-        ['operation', 'total'],
-        query,
-      ),
-    };
+    return QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
+      ['operation', 'total'],
+      query,
+    );
   }
 
   async amountOfCookiesSet() {
@@ -190,10 +181,7 @@ export class StatisticsService {
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
-    return {
-      type: 'amountOfCookiesSet',
-      data: QueryDataTransformer.transformSingleCountData(query),
-    };
+    return QueryDataTransformer.transformSingleCountData(query);
   }
 
   async amountOfIdentifierCookies() {
@@ -206,10 +194,7 @@ export class StatisticsService {
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
-    return {
-      type: 'amountOfIdentifierCookies',
-      data: QueryDataTransformer.transformSingleCountData(query),
-    };
+    return QueryDataTransformer.transformSingleCountData(query);
   }
 
   async amountOfCookieCollisions() {
@@ -219,10 +204,7 @@ export class StatisticsService {
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
-    return {
-      type: 'amountOfCookieCollisions',
-      data: QueryDataTransformer.transformSingleCountData(query),
-    };
+    return QueryDataTransformer.transformSingleCountData(query);
   }
 
   async websiteWithMostCollisions() {
@@ -234,13 +216,27 @@ export class StatisticsService {
       .addOrderBy('total', 'DESC')
       .getRawMany();
 
-    return {
-      type: 'websiteWithMostCollisions',
-      data: QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
-        ['url', 'total'],
-        query,
-      ),
-    };
+    return QueryDataTransformer.transformQueryWithDoubleGroupByKeys(
+      ['url', 'total'],
+      query,
+    );
+  }
+
+  async amountOfWebsitesWithGhostwriting() {
+    const query = await this.baseQueryBuilder()
+      .addSelect('COUNT(websites.id) AS total')
+      .getRawMany();
+
+    return QueryDataTransformer.transformSingleCountData(query);
+  }
+
+  async amountOfWebsitesWithCollisions() {
+    const query = await this.baseQueryBuilder()
+      .addSelect('COUNT(collisions.id) AS total')
+      .innerJoin('websites.cookieCollisions', 'collisions')
+      .getRawMany();
+
+    return QueryDataTransformer.transformSingleCountData(query);
   }
 }
 
