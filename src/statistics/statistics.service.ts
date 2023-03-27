@@ -263,7 +263,8 @@ export class StatisticsService {
     const query = await this.baseQueryBuilder()
       .addSelect('COUNT(taintReports.id) AS total')
       .innerJoin('websites.taintReports', 'taintReports')
-      .where('taintReports.type = :type', {
+      .innerJoin('taintReports.taints', 'taints')
+      .where('taints.type = :type', {
         type,
       })
       .getRawMany();
