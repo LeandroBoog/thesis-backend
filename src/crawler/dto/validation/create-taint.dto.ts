@@ -16,6 +16,9 @@ export class CreateTaintDto {
   end: number;
 
   @IsString()
+  type: string;
+
+  @IsString()
   cookieString: string;
 
   @ArrayNotEmpty()

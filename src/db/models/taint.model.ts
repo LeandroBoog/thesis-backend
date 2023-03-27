@@ -22,6 +22,9 @@ export class TaintModel {
   end: number;
 
   @Column()
+  type: string;
+
+  @Column()
   cookieString: string;
 
   @OneToMany(() => FlowModel, (flow) => flow.taint, {

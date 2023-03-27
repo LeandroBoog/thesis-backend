@@ -21,9 +21,6 @@ export class CreateTaintReportDto {
   scriptDomain: string;
 
   @IsString()
-  type: string;
-
-  @IsString()
   taintedString: string;
 
   @ArrayNotEmpty()

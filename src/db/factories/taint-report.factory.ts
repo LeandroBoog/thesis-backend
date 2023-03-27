@@ -17,7 +17,6 @@ export const TaintReportFactory = setSeederFactory(
     ]);
     entry.scriptDomain = faker.internet.url();
     entry.taintedString = faker.datatype.string(10);
-    entry.type = faker.helpers.arrayElement(['self', 'other']);
     entry.sink = faker.helpers.arrayElement([
       'document.cookie',
       'document.write',

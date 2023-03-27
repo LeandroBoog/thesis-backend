@@ -12,26 +12,44 @@ export class StatisticsService {
     private crawlSessionRepository: Repository<CrawlSessionModel>,
   ) {}
 
-  async getLatestInsert() {
-    const query = await this.crawlSessionRepository
+  async getCrawlingStatusInformation() {
+    const newestInsert = await this.crawlSessionRepository
+      .createQueryBuilder('crawl')
+      .select('crawl')
+      .addSelect('websites.createdAt AS timestamp')
+      .innerJoin('crawl.websites', 'websites')
+      .orderBy('websites.createdAt', 'ASC')
+      .getRawOne();
+
+    const latestInsert = await this.crawlSessionRepository
       .createQueryBuilder('crawl')
       .select('crawl')
       .addSelect('websites.updatedAt AS timestamp')
       .innerJoin('crawl.websites', 'websites')
-      .orderBy('websites.updatedAt')
+      .orderBy('websites.updatedAt', 'DESC')
       .getRawOne();
 
-    if (!query)
+    if (!newestInsert || !latestInsert)
       return {
         message: 'No insertions found!',
       };
 
-    const timestamp = query.timestamp;
-    const now = Number(new Date());
-    const difference = now - Number(new Date(timestamp));
+    const latest = latestInsert.timestamp;
+    const newest = newestInsert.timestamp;
+
+    const crawlDurationInMilliSec =
+      Number(new Date(latest)) - Number(new Date(newest));
+    const crawlDuration =
+      Math.round(crawlDurationInMilliSec / 1000 / 60 / 60) + 'h';
+
+    const difference = Number(new Date()) - Number(new Date(latest));
+    const lastInsert = Math.round(difference / 1000 / 60) + 'm ago';
+
     return {
-      timestamp,
-      lastInsert: Math.round(difference / 1000 / 60) + 'm ago',
+      newest,
+      latest,
+      crawlDuration,
+      lastInsert,
     };
   }
 

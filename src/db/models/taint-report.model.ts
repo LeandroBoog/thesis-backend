@@ -29,9 +29,6 @@ export class TaintReportModel {
   taintedString: string;
 
   @Column()
-  type: string;
-
-  @Column()
   sink: string;
 
   @Column()

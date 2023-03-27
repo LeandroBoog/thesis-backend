@@ -9,7 +9,7 @@ export class StatisticsController {
 
   @Get('latestInsert')
   find() {
-    return this.statisticsService.getLatestInsert();
+    return this.statisticsService.getCrawlingStatusInformation();
   }
 
   @Get('')
