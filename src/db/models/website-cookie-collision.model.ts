@@ -18,9 +18,13 @@ export class WebsiteCookieCollisionModel {
   @Column()
   name: string;
 
-  @OneToMany(() => WebsiteCookieCollisionUrlModel, (url) => url.value, {
-    cascade: true,
-  })
+  @OneToMany(
+    () => WebsiteCookieCollisionUrlModel,
+    (url) => url.cookieCollision,
+    {
+      cascade: true,
+    },
+  )
   urls: WebsiteCookieCollisionUrlModel[];
 
   @ManyToOne(() => WebsiteModel, (website) => website.cookieCollisions, {

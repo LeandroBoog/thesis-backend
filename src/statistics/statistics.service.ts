@@ -64,6 +64,8 @@ export class StatisticsService {
       'amountOfCookiesSet',
       'amountOfIdentifierCookies',
       'amountOfCookieCollisions',
+      'amountOfHttpCookies',
+      'amountOfJsCookies',
       'websiteWithMostCollisions',
       'amountOfWebsitesWithGhostwriting',
       'amountOfWebsitesWithCollisions',
@@ -210,6 +212,32 @@ export class StatisticsService {
       .innerJoin('websites.cookies', 'cookies')
       .where('cookies.isIdentifier = :isIdentifier', {
         isIdentifier: true,
+      })
+      .addOrderBy('total', 'DESC')
+      .getRawMany();
+
+    return QueryDataTransformer.transformSingleCountData(query);
+  }
+
+  async amountOfHttpCookies() {
+    const query = await this.baseQueryBuilder()
+      .addSelect('COUNT(cookies.id) AS total')
+      .innerJoin('websites.cookies', 'cookies')
+      .where('cookies.type = :type', {
+        type: 'HTTP',
+      })
+      .addOrderBy('total', 'DESC')
+      .getRawMany();
+
+    return QueryDataTransformer.transformSingleCountData(query);
+  }
+
+  async amountOfJsCookies() {
+    const query = await this.baseQueryBuilder()
+      .addSelect('COUNT(cookies.id) AS total')
+      .innerJoin('websites.cookies', 'cookies')
+      .where('cookies.type = :type', {
+        type: 'JS',
       })
       .addOrderBy('total', 'DESC')
       .getRawMany();

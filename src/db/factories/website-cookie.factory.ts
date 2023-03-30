@@ -9,7 +9,7 @@ export const WebsiteCookieFactory = setSeederFactory(
     entry.name = faker.datatype.string(10);
     entry.value = faker.datatype.string(10);
     entry.origin = faker.internet.url();
-    entry.type = faker.datatype.string(10);
+    entry.type = faker.helpers.arrayElement(['JS', 'HTTP']);
     entry.isIdentifier = faker.datatype.boolean();
     return entry;
   },
