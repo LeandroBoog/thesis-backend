@@ -54,23 +54,38 @@ export class StatisticsService {
   }
 
   async gatherStatistics(requestedStatistics) {
-    const availableStatistics = [
+    const cookieStatistics = [
+      'amountOfIdentifierCookiesQuery',
+      'amountOfCookiesSet',
+      'amountOfIdentifierCookies',
+      'amountOfHttpCookies',
+      'amountOfJsCookies',
+      'amountOfHTTPIdentifierCookies',
+      'amountOfFirstPartyHTTPIdentifierCookies',
+      'amountOfThirdPartyHTTPIdentifierCookies',
+      'amountOfJSIdentifierCookies',
+      'amountOfFirstPartyJSIdentifierCookies',
+      'amountOfThirdPartyJSIdentifierCookies',
+      'amountOfCookieCollisions',
+      'amountOfWebsitesWithCollisions',
+    ];
+
+    const ghostwritingStatistics = [
       'mostUsedSinks',
       'mostCommonScriptOrigins',
       'websiteWithMostGhostwriting',
       'totalGhostwritingReports',
       'totalFlowsWithRelevantSource',
       'mostUsedOperations',
-      'amountOfCookiesSet',
-      'amountOfIdentifierCookies',
-      'amountOfCookieCollisions',
-      'amountOfHttpCookies',
-      'amountOfJsCookies',
       'websiteWithMostCollisions',
       'amountOfWebsitesWithGhostwriting',
-      'amountOfWebsitesWithCollisions',
       'amountOfSelfGhostwriting',
       'amountOfOtherGhostwriting',
+    ];
+
+    const availableStatistics = [
+      ...cookieStatistics,
+      ...ghostwritingStatistics,
     ];
 
     const statisticsToGather =
@@ -196,65 +211,6 @@ export class StatisticsService {
     );
   }
 
-  async amountOfCookiesSet() {
-    const query = await this.baseQueryBuilder()
-      .addSelect('COUNT(cookies.id) AS total')
-      .innerJoin('websites.cookies', 'cookies')
-      .addOrderBy('total', 'DESC')
-      .getRawMany();
-
-    return QueryDataTransformer.transformSingleCountData(query);
-  }
-
-  async amountOfIdentifierCookies() {
-    const query = await this.baseQueryBuilder()
-      .addSelect('COUNT(cookies.id) AS total')
-      .innerJoin('websites.cookies', 'cookies')
-      .where('cookies.isIdentifier = :isIdentifier', {
-        isIdentifier: true,
-      })
-      .addOrderBy('total', 'DESC')
-      .getRawMany();
-
-    return QueryDataTransformer.transformSingleCountData(query);
-  }
-
-  async amountOfHttpCookies() {
-    const query = await this.baseQueryBuilder()
-      .addSelect('COUNT(cookies.id) AS total')
-      .innerJoin('websites.cookies', 'cookies')
-      .where('cookies.type = :type', {
-        type: 'HTTP',
-      })
-      .addOrderBy('total', 'DESC')
-      .getRawMany();
-
-    return QueryDataTransformer.transformSingleCountData(query);
-  }
-
-  async amountOfJsCookies() {
-    const query = await this.baseQueryBuilder()
-      .addSelect('COUNT(cookies.id) AS total')
-      .innerJoin('websites.cookies', 'cookies')
-      .where('cookies.type = :type', {
-        type: 'JS',
-      })
-      .addOrderBy('total', 'DESC')
-      .getRawMany();
-
-    return QueryDataTransformer.transformSingleCountData(query);
-  }
-
-  async amountOfCookieCollisions() {
-    const query = await this.baseQueryBuilder()
-      .addSelect('COUNT(collisions.id) AS total')
-      .innerJoin('websites.cookieCollisions', 'collisions')
-      .addOrderBy('total', 'DESC')
-      .getRawMany();
-
-    return QueryDataTransformer.transformSingleCountData(query);
-  }
-
   async websiteWithMostCollisions() {
     const query = await this.baseQueryBuilder()
       .addSelect('websites.url AS url')
@@ -307,42 +263,116 @@ export class StatisticsService {
   async amountOfOtherGhostwriting() {
     return await this.amountOfGhostwritingType('other');
   }
-}
 
-/*
-
-  async bySession() {
-    const query = await this.crawlSessionRepository
-      .createQueryBuilder('crawl')
-      .select('crawl.id AS session')
-      .addSelect('COUNT(taints.id) AS total')
-      .innerJoin('crawl.websites', 'websites')
-      .innerJoin('websites.taintReports', 'taintReports')
-      .innerJoin('taintReports.taints', 'taints')
-      .groupBy('session')
-      .orderBy('total', 'DESC')
-      .getRawMany();
-
-    //const _ = await this.taintReportRepository.count({});
-    return {
-      type: 'bySession',
-      size: query.length,
-      data: query,
-    };
+  // --- Cookie Queries ---
+  baseAmountOfCookiesQuery() {
+    return this.baseQueryBuilder()
+      .addSelect('COUNT(cookies.id) AS total')
+      .innerJoin('websites.cookies', 'cookies')
+      .addOrderBy('total', 'DESC');
   }
 
-sinks listed from most used to least ✔️
+  async amountOfCookiesSet() {
+    const query = await this.baseAmountOfCookiesQuery().getRawMany();
+    return QueryDataTransformer.transformSingleCountData(query);
+  }
 
-> Leandro Boog:
-amount of ghostwriting in total from x sites in percent ✔️
+  async amountOfHttpCookies() {
+    const query = await this.baseAmountOfCookiesQuery()
+      .where('cookies.type = :type', {
+        type: 'HTTP',
+      })
+      .getRawMany();
+    return QueryDataTransformer.transformSingleCountData(query);
+  }
 
-> Leandro Boog:
+  async amountOfJsCookies() {
+    const query = await this.baseAmountOfCookiesQuery()
+      .where('cookies.type = :type', {
+        type: 'JS',
+      })
+      .getRawMany();
+    return QueryDataTransformer.transformSingleCountData(query);
+  }
+
+  async amountOfIdentifierCookiesWhere(where) {
+    const query = await this.baseAmountOfCookiesQuery().where(
+      'cookies.isIdentifier = true',
+    );
+
+    const partyQueries = {
+      'first-party': 'cookies.origin = websites.url',
+      'third-party': 'cookies.origin != websites.url',
+    };
+    if (where && where.party && partyQueries[where.party]) {
+      query.andWhere(partyQueries[where.party]);
+    }
+
+    const validTypes = ['HTTP', 'JS'];
+    if (where && where.type && validTypes.includes(where.type)) {
+      query.andWhere('cookies.type = :type', {
+        type: where.type,
+      });
+    }
+
+    const result = await query.getRawMany();
+    return QueryDataTransformer.transformSingleCountData(result);
+  }
+
+  async amountOfIdentifierCookies() {
+    return await this.amountOfIdentifierCookiesWhere({});
+  }
+
+  async amountOfHTTPIdentifierCookies() {
+    return await this.amountOfIdentifierCookiesWhere({ type: 'HTTP' });
+  }
+
+  async amountOfJSIdentifierCookies() {
+    return await this.amountOfIdentifierCookiesWhere({ type: 'JS' });
+  }
+
+  async amountOfFirstPartyHTTPIdentifierCookies() {
+    return await this.amountOfIdentifierCookiesWhere({
+      party: 'first-party',
+      type: 'HTTP',
+    });
+  }
+
+  async amountOfFirstPartyJSIdentifierCookies() {
+    return await this.amountOfIdentifierCookiesWhere({
+      party: 'first-party',
+      type: 'JS',
+    });
+  }
+
+  async amountOfThirdPartyHTTPIdentifierCookies() {
+    return await this.amountOfIdentifierCookiesWhere({
+      party: 'third-party',
+      type: 'HTTP',
+    });
+  }
+
+  async amountOfThirdPartyJSIdentifierCookies() {
+    return await this.amountOfIdentifierCookiesWhere({
+      party: 'third-party',
+      type: 'JS',
+    });
+  }
+
+  async amountOfCookieCollisions() {
+    const query = await this.baseQueryBuilder()
+      .addSelect('COUNT(collisions.id) AS total')
+      .innerJoin('websites.cookieCollisions', 'collisions')
+      .addOrderBy('total', 'DESC')
+      .getRawMany();
+
+    return QueryDataTransformer.transformSingleCountData(query);
+  }
+}
+
+
+/*
 how many scripts ghostwritten more than once!
-
-> Leandro Boog:
 and which were they
-
-by how many subpages were visited
-
 // https://stackoverflow.com/questions/66307587/typeorm-how-to-add-count-field-when-using-getmany
  */
