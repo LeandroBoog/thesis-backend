@@ -55,7 +55,6 @@ export class StatisticsService {
 
   async gatherStatistics(requestedStatistics) {
     const cookieStatistics = [
-      'amountOfIdentifierCookiesQuery',
       'amountOfCookiesSet',
       'amountOfIdentifierCookies',
       'amountOfHttpCookies',
@@ -315,8 +314,9 @@ export class StatisticsService {
       });
     }
 
-    const result = await query.getRawMany();
-    return QueryDataTransformer.transformSingleCountData(result);
+    return QueryDataTransformer.transformSingleCountData(
+      await query.getRawMany(),
+    );
   }
 
   async amountOfIdentifierCookies() {
