@@ -10,7 +10,7 @@ const config: Config = {
   },
   swagger: {
     enabled: true,
-    title: 'Nestjs FTW',
+    title: 'NestJs',
     description: 'The nestjs API description',
     version: '1.5',
     path: 'api',

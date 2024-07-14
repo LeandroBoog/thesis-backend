@@ -23,7 +23,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  //      forbidNonWhitelisted: true,
+  // forbidNonWhitelisted: true,
   // enable DI for class-validator
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 

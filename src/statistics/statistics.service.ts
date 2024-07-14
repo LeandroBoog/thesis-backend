@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { CrawlSessionModel } from '../db/models/crawl-session.model';
 import { QueryDataTransformer } from '../common/helpers/QueryDataTransformer';
 import { SessionEntity } from './entities/session.entity';
+import { WebsiteCookieModel } from '../db/models/website-cookie.model';
 
 @Injectable()
 export class StatisticsService {
   constructor(
     @InjectRepository(CrawlSessionModel)
     private crawlSessionRepository: Repository<CrawlSessionModel>,
+    @InjectRepository(WebsiteCookieModel)
+    private websiteCookieRepository: Repository<CrawlSessionModel>,
   ) {}
 
   async getCrawlingStatusInformation() {
@@ -55,6 +58,7 @@ export class StatisticsService {
 
   async gatherStatistics(requestedStatistics) {
     const cookieStatistics = [
+      'getCookieStore',
       'amountOfCookiesSet',
       'amountOfIdentifierCookies',
       'amountOfHttpCookies',
@@ -135,7 +139,7 @@ export class StatisticsService {
   async mostCommonScriptOrigins() {
     const query = await this.baseQueryBuilder()
       .addSelect(
-        'COUNT(taintReports.script) AS total, taintReports.script AS script',
+        'COUNT(taintReports.script) AS total, taintReports.scriptDomain AS script',
       )
       .innerJoin('websites.taintReports', 'taintReports')
       .addGroupBy('script')
@@ -368,8 +372,19 @@ export class StatisticsService {
 
     return QueryDataTransformer.transformSingleCountData(query);
   }
-}
 
+  async getCookieStore() {
+    const query = await this.websiteCookieRepository
+      .createQueryBuilder('cookie')
+      .select('cookie.name as key, cookie.value as value, cookie.origin as origin, cookie.isIdentifier as isIdentifier, cookie.type as creationType')
+      .where('cookie.websiteId = :id', {
+        id: 497,
+      })
+      .getRawMany();
+
+    return query;
+  }
+}
 
 /*
 how many scripts ghostwritten more than once!
